@@ -606,7 +606,37 @@ function checkBadges(){
   if(got) save();
 }
 
-/* ---------- WEB SPEECH ---------- */
+/* ---------- АУДИО: дайын қазақша дауыс (MP3) + TTS резерв ---------- */
+let AUDIO_MAP={};          // "Сөз" -> "0001.mp3"
+let audioEl=null;
+async function loadAudioMap(){
+  try{
+    const r=await fetch("audio/manifest.json",{cache:"force-cache"});
+    if(!r.ok) throw new Error(r.status);
+    AUDIO_MAP=await r.json();
+  }catch(e){ AUDIO_MAP={}; }
+}
+loadAudioMap();
+function findAudio(text){
+  const t=(text||"").trim();
+  if(AUDIO_MAP[t]) return "audio/"+AUDIO_MAP[t];
+  if(AUDIO_MAP["prov:"+t]) return "audio/"+AUDIO_MAP["prov:"+t];
+  if(AUDIO_MAP["read:"+t]) return "audio/"+AUDIO_MAP["read:"+t];
+  return null;
+}
+function speak(text){
+  const src=findAudio(text);
+  if(src){
+    if(audioEl){ try{audioEl.pause();}catch(e){} }
+    audioEl=new Audio(src);
+    const p=audioEl.play();
+    if(p&&p.catch) p.catch(()=>browserSpeak(text));
+    return;
+  }
+  browserSpeak(text);
+}
+
+/* ---------- WEB SPEECH (резерв) ---------- */
 let voices=[];
 function loadVoices(){
   if(!("speechSynthesis" in window)) return;
@@ -617,16 +647,21 @@ function pickVoice(){
   if(!voices.length) loadVoices();
   const kk=voices.find(v=>/^(kk|kz)/i.test(v.lang))||voices.find(v=>/kk/i.test(v.lang));
   if(kk) return kk;
-  const ru=voices.find(v=>/^(ru)/i.test(v.lang));
+  const ru=voices.find(v=>/^ru/i.test(v.lang));
   return ru||voices[0]||null;
 }
-function speak(text){
+// Қазақ әріптерін орыс дауысына оқытуға арналған фонетикалық сәйкестендіру
+// (қазақша дауыс болмаса акцентті азайтады)
+const RU_PHON={"ә":"э","Ә":"Э","ғ":"г","Ғ":"Г","қ":"г","Қ":"Г","ң":"нг","Ң":"Нг","ө":"о","Ө":"О","ұ":"у","Ұ":"У","ү":"ы","Ү":"ы","і":"и","І":"И","һ":"х","Һ":"Х"};
+function toRuPhonetic(s){ return (s||"").replace(/[әӘғҒқҚңҢөӨұҰүҮіІһҺ]/g,ch=>RU_PHON[ch]||ch); }
+function browserSpeak(text){
   if(!("speechSynthesis" in window)){ toast("Бұл браузерде дауыс қолдаусыз"); return; }
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
   const v=pickVoice();
-  if(v){ u.voice=v; u.lang=v.lang; } else { u.lang="kk-KZ"; }
-  u.rate=0.92; u.pitch=1;
+  const isKk=v?/^(kk|kz)/i.test(v.lang):false;
+  const u=new SpeechSynthesisUtterance(isKk?text:toRuPhonetic(text));
+  if(v){ u.voice=v; u.lang=v.lang; } else { u.lang=isKk?"kk-KZ":"ru-RU"; }
+  u.rate=0.85; u.pitch=1;
   speechSynthesis.speak(u);
 }
 
@@ -946,7 +981,7 @@ function vListen(){
     </div>
     <button class="btn btn-soft" style="margin-top:16px" onclick="newListen()">🔄 Жаңа сөз</button>
   </div>
-  <div class="note" style="max-width:560px;margin:16px auto 0">ℹ️ Дауыс қолдауы браузер мен құрылғыдағы қазақша/орысша дауысқа байланысты. Ең жақсы нәтиже Chrome-де.</div>`;
+  <div class="note" style="max-width:560px;margin:16px auto 0">ℹ️ Дауыс — табиғи қазақша диктор (алдын ала жазылған аудио файлдар). Егер аудио жүктелмесе, браузердің өзінің дауысы қолданылады.</div>`;
 }
 function newListen(){go('listen');}
 function ansListen(btn){
@@ -1073,7 +1108,9 @@ function provCard(p,i){
   return `<div class="prov-card" onclick="this.classList.toggle('flip')">
     <div class="prov-inner">
       <div class="prov-face prov-front"><div class="q">«${p.t}»</div><div class="tap">бас →</div></div>
-      <div class="prov-face prov-back"><div class="m">${p.m}</div></div>
+      <div class="prov-face prov-back"><div class="m">${p.m}</div>
+        <button class="speak-btn" style="position:absolute;bottom:10px;right:12px;background:#fff" title="Дауысымен тыңдау" onclick="event.stopPropagation();speak('${p.t.replace(/'/g,"\\'")}')">🔊</button>
+      </div>
     </div>
   </div>`;
 }
