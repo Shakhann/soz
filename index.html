@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>СӨЗ — Қазақ тілін үйренетін цифрлық платформа</title>
+<meta name="description" content="СӨЗ — қазақ тілін заманауи тәсілмен үйрететін интерактивті цифрлық платформа: сөздік, грамматика, оқу, тыңдау, сөйлеу, тест, мақал-мәтел және прогресс." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2300AFCA'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23fff' font-family='Arial'%3E%D0%A1%3C/text%3E%3C/svg%3E" />
+<style>
+:root{
+  --sky:#00AFCA; --sky-d:#008ba1; --sky-l:#E3F6FA; --sky-ll:#F2FBFD;
+  --gold:#FEC50C; --gold-d:#E0A800; --gold-l:#FFF4D6;
+  --ink:#0F2E38; --ink-2:#4A6B76; --ink-3:#7E98A1;
+  --bg:#F4FAFB; --card:#fff; --line:#DCEEF2;
+  --green:#1FA56B; --green-l:#E4F6EE;
+  --red:#E25555; --red-l:#FBE9E9;
+  --r:18px; --r-sm:12px;
+  --sh:0 8px 26px rgba(15,46,56,.07);
+  --sh-lg:0 18px 48px rgba(15,46,56,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Manrope','Noto Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  color:var(--ink); background:var(--bg); line-height:1.55;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit}
+::selection{background:var(--gold);color:var(--ink)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#c3dde3;border-radius:20px;border:2px solid var(--bg)}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ===== layout ===== */
+#app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
+.sidebar{
+  position:sticky;top:0;height:100vh;display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#063340 0%,#00AFCA 140%);
+  color:#fff;padding:22px 16px;gap:6px;overflow-y:auto;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:6px 8px 18px}
+.brand-logo{
+  width:46px;height:46px;border-radius:14px;flex:0 0 auto;
+  background:radial-gradient(circle at 30% 25%,#FFE47A,var(--gold));
+  display:grid;place-items:center;font-weight:800;font-size:26px;color:#063340;
+  box-shadow:0 6px 18px rgba(254,197,12,.4);
+}
+.brand-name{font-weight:800;font-size:22px;letter-spacing:.5px;line-height:1}
+.brand-sub{font-size:11.5px;opacity:.8;font-weight:500;margin-top:3px}
+.nav{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;
+  font-weight:600;font-size:14.5px;color:rgba(255,255,255,.82);text-align:left;width:100%;
+  transition:.18s;position:relative;
+}
+.nav-item:hover{background:rgba(255,255,255,.10);color:#fff}
+.nav-item.active{background:#fff;color:var(--sky-d);box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.nav-item .ico{font-size:19px;width:24px;text-align:center}
+.nav-item.active .ico{transform:scale(1.05)}
+.side-foot{margin-top:auto;padding:14px 12px;font-size:11.5px;opacity:.65;line-height:1.5}
+.side-level{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;padding:12px;margin-top:10px;
+}
+.side-level .lv{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:700}
+.xpbar{height:7px;border-radius:20px;background:rgba(255,255,255,.22);margin-top:8px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#FFE47A);border-radius:20px;transition:width .5s}
+
+/* ===== main ===== */
+main{padding:26px 34px 70px;max-width:1180px;width:100%;margin:0 auto;min-width:0}
+.topbar{display:none}
+.view{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--sky-d)}
+h1.page{font-size:30px;font-weight:800;margin:6px 0 4px}
+p.lead{color:var(--ink-2);font-size:15px;max-width:640px;margin-bottom:22px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.pad{padding:22px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+
+/* hero */
+.hero{
+  border-radius:24px;overflow:hidden;position:relative;color:#fff;padding:34px 34px;
+  background:linear-gradient(120deg,#00AFCA,#0089a5 55%,#063340);
+  box-shadow:var(--sh-lg);margin-bottom:22px;
+}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(254,197,12,.35),transparent 70%)}
+.hero::before{content:"";position:absolute;left:40%;bottom:-120px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%)}
+.hero h1{font-size:38px;font-weight:800;line-height:1.1;max-width:560px;position:relative;z-index:1}
+.hero p{max-width:520px;opacity:.92;margin-top:12px;font-size:15.5px;position:relative;z-index:1}
+.hero-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;position:relative;z-index:1}
+.badge-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:6px 12px;border-radius:30px;font-size:12.5px;font-weight:700;margin-bottom:16px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:14.5px;padding:12px 20px;border-radius:12px;transition:.18s;white-space:nowrap}
+.btn-primary{background:var(--gold);color:#063340;box-shadow:0 8px 20px rgba(254,197,12,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(254,197,12,.5)}
+.btn-ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.btn-ghost:hover{background:rgba(255,255,255,.22)}
+.btn-sky{background:var(--sky);color:#fff}
+.btn-sky:hover{background:var(--sky-d)}
+.btn-soft{background:var(--sky-l);color:var(--sky-d)}
+.btn-soft:hover{background:#d3eff6}
+.btn-line{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn-line:hover{border-color:var(--sky)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* stat cards */
+.stat{padding:18px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh);display:flex;gap:14px;align-items:center}
+.stat .s-ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:var(--sky-l)}
+.stat .s-num{font-size:24px;font-weight:800;line-height:1}
+.stat .s-lbl{font-size:12.5px;color:var(--ink-2);font-weight:600;margin-top:3px}
+.stat.gold .s-ico{background:var(--gold-l)}
+.stat.green .s-ico{background:var(--green-l)}
+
+/* section head */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px}
+.sec-head h2{font-size:19px;font-weight:800}
+.link-more{color:var(--sky-d);font-weight:700;font-size:13.5px}
+.link-more:hover{text-decoration:underline}
+
+/* module tiles */
+.tile{padding:20px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh);cursor:pointer;transition:.2s;display:flex;flex-direction:column;gap:8px;text-align:left}
+.tile:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:var(--sky)}
+.tile .t-ico{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:25px}
+.tile h3{font-size:16px;font-weight:800}
+.tile p{font-size:13px;color:var(--ink-2);line-height:1.45}
+.tile .go{margin-top:auto;font-size:13px;font-weight:800;color:var(--sky-d);opacity:0;transform:translateX(-4px);transition:.2s}
+.tile:hover .go{opacity:1;transform:none}
+
+/* word of the day */
+.wotd{background:linear-gradient(120deg,#FFF8E1,#FFFDF7);border:1px solid #F3E2A8}
+.wotd .w{font-size:30px;font-weight:800}
+.wotd .m{color:var(--ink-2);font-size:14.5px}
+
+/* category pills */
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px}
+.pill{padding:9px 15px;border-radius:30px;font-weight:700;font-size:13.5px;background:#fff;border:1.5px solid var(--line);color:var(--ink-2);transition:.15s}
+.pill:hover{border-color:var(--sky)}
+.pill.active{background:var(--sky);border-color:var(--sky);color:#fff;box-shadow:0 6px 16px rgba(0,175,202,.3)}
+
+/* flashcard */
+.flash-wrap{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.flashcard{
+  perspective:1400px;height:340px;cursor:pointer;
+}
+.fc-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flashcard.flip .fc-inner{transform:rotateY(180deg)}
+.fc-face{
+  position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;padding:30px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;
+}
+.fc-front{background:linear-gradient(150deg,#00AFCA,#063340);color:#fff;box-shadow:var(--sh-lg)}
+.fc-back{background:#fff;border:2px solid var(--sky);transform:rotateY(180deg);box-shadow:var(--sh-lg)}
+.fc-word{font-size:46px;font-weight:800}
+.fc-pron{font-size:16px;opacity:.85;font-style:italic}
+.fc-caption{text-align:center;font-size:12.5px;color:var(--ink-3);font-weight:600;margin-top:12px}
+.fc-mean{font-size:24px;font-weight:800;color:var(--sky-d)}
+.fc-ex{font-size:15px;color:var(--ink-2);font-style:italic;max-width:320px}
+.fc-tag{font-size:11.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:var(--gold-l);color:var(--gold-d);padding:5px 12px;border-radius:20px}
+.fc-controls{display:flex;gap:10px;margin-top:16px;width:100%}
+.fc-side{display:flex;flex-direction:column;gap:14px}
+.known-count{font-size:13px;color:var(--ink-2);font-weight:600}
+
+/* dictionary list */
+.word-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:#fff;border:1px solid var(--line);transition:.15s}
+.word-row:hover{border-color:var(--sky);transform:translateX(3px)}
+.word-row .w{font-weight:800;font-size:16.5px;min-width:120px}
+.word-row .m{color:var(--ink-2);font-size:14px;flex:1}
+.word-row .st{font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px}
+.st-known{background:var(--green-l);color:var(--green)}
+.st-new{background:var(--sky-ll);color:var(--sky-d)}
+.speak-btn{width:38px;height:38px;border-radius:50%;background:var(--sky-l);display:grid;place-items:center;font-size:17px;flex:0 0 auto;transition:.15s}
+.speak-btn:hover{background:var(--sky);color:#fff}
+
+/* grammar */
+.lesson-item{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;background:#fff;border:1px solid var(--line);cursor:pointer;transition:.15s}
+.lesson-item:hover{border-color:var(--sky);box-shadow:var(--sh)}
+.lesson-item.done{border-color:var(--green);background:var(--green-l)}
+.lesson-num{width:38px;height:38px;border-radius:11px;background:var(--sky-l);color:var(--sky-d);display:grid;place-items:center;font-weight:800;flex:0 0 auto}
+.lesson-item.done .lesson-num{background:var(--green);color:#fff}
+.lesson-item h4{font-size:15.5px;font-weight:800}
+.lesson-item p{font-size:13px;color:var(--ink-2)}
+.gram-body h3{font-size:24px;font-weight:800;margin-bottom:6px}
+.gram-body .block{margin-top:18px;padding:16px 18px;background:var(--sky-ll);border-radius:14px;border-left:4px solid var(--sky)}
+.gram-body .block h4{font-size:15px;font-weight:800;color:var(--sky-d);margin-bottom:6px}
+.gram-body .block p{font-size:14.5px;color:var(--ink-2)}
+.gram-body ul{margin:8px 0 0 18px}
+.gram-body li{font-size:14.5px;color:var(--ink-2);margin-bottom:5px}
+.gram-body li b{color:var(--ink)}
+.example-line{font-style:italic;color:var(--ink);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-top:8px;font-size:14px}
+
+/* reading */
+.read-card{padding:26px 28px}
+.read-text{font-size:17px;line-height:1.9;color:var(--ink)}
+.rword{color:var(--sky-d);font-weight:700;cursor:pointer;border-bottom:2px dotted var(--sky);transition:.15s;padding:0 1px}
+.rword:hover{background:var(--sky-l)}
+.dict-pop{
+  position:fixed;z-index:60;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;
+  max-width:260px;font-size:14px;box-shadow:var(--sh-lg);pointer-events:none;opacity:0;transform:translateY(6px);transition:.15s;line-height:1.4
+}
+.dict-pop.show{opacity:1;transform:none}
+.dict-pop b{color:var(--gold)}
+
+/* quiz */
+.quiz-q{font-size:19px;font-weight:700;margin-bottom:18px;line-height:1.45}
+.opt{display:block;width:100%;text-align:left;padding:14px 18px;border-radius:14px;border:2px solid var(--line);background:#fff;font-size:15px;font-weight:600;margin-bottom:11px;transition:.15s}
+.opt:hover:not(:disabled){border-color:var(--sky);background:var(--sky-ll)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.opt:disabled{cursor:default;opacity:.95}
+.quiz-progress{height:9px;border-radius:20px;background:var(--line);overflow:hidden;margin-bottom:20px}
+.quiz-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--sky),var(--gold));transition:width .4s;border-radius:20px}
+.score-chip{display:inline-flex;gap:8px;align-items:center;background:var(--gold-l);color:var(--gold-d);font-weight:800;padding:8px 15px;border-radius:30px;font-size:14px}
+.result-big{font-size:64px;font-weight:800;background:linear-gradient(90deg,var(--sky),var(--gold-d));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* proverbs flip */
+.prov-card{perspective:1200px;height:170px;cursor:pointer}
+.prov-inner{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d}
+.prov-card.flip .prov-inner{transform:rotateY(180deg)}
+.prov-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:center}
+.prov-front{background:linear-gradient(140deg,#00AFCA,#063340);color:#fff;box-shadow:var(--sh)}
+.prov-front .q{font-size:16.5px;font-weight:700;line-height:1.5}
+.prov-front .tap{position:absolute;bottom:12px;right:16px;font-size:11.5px;opacity:.7}
+.prov-back{background:var(--gold-l);transform:rotateY(180deg);border:1px solid #F3E2A8}
+.prov-back .m{font-size:15px;color:var(--ink);font-weight:600;line-height:1.5}
+
+/* progress */
+.ring-wrap{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:150px;height:150px}
+.ring svg{transform:rotate(-90deg)}
+.ring .c-val{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .c-num{font-size:30px;font-weight:800;line-height:1}
+.ring .c-lbl{font-size:11.5px;color:var(--ink-2);font-weight:600}
+.badge{display:flex;gap:13px;align-items:center;padding:14px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+.badge .b-ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:var(--sky-l)}
+.badge.locked{opacity:.5;filter:grayscale(1)}
+.badge .b-t{font-weight:800;font-size:14.5px}
+.badge .b-d{font-size:12.5px;color:var(--ink-2)}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:14px;font-weight:700;font-size:14.5px;box-shadow:var(--sh-lg);opacity:0;pointer-events:none;transition:.3s;z-index:100}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(6,51,64,.55);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:80;animation:fade .2s;padding:20px}
+.modal{background:#fff;border-radius:22px;max-width:520px;width:100%;padding:28px;box-shadow:var(--sh-lg);animation:pop .3s}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
+.modal h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.modal p{color:var(--ink-2);font-size:14.5px;margin-bottom:16px}
+
+/* listening / speaking */
+.speaking-stage{text-align:center;padding:30px 20px}
+.speak-word{font-size:52px;font-weight:800;color:var(--sky-d)}
+.mic-btn{width:92px;height:92px;border-radius:50%;background:linear-gradient(150deg,var(--sky),var(--sky-d));color:#fff;font-size:38px;display:grid;place-items:center;margin:24px auto;box-shadow:0 12px 30px rgba(0,175,202,.4);transition:.2s;position:relative}
+.mic-btn:hover{transform:scale(1.05)}
+.mic-btn.rec{background:linear-gradient(150deg,var(--red),#c0392b);animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(226,85,85,.5)}70%{box-shadow:0 0 0 22px rgba(226,85,85,0)}100%{box-shadow:0 0 0 0 rgba(226,85,85,0)}}
+.rec-text{font-size:16px;color:var(--ink-2);min-height:24px;font-weight:600}
+.listen-play{font-size:56px}
+
+.note{font-size:12.5px;color:var(--ink-3);background:var(--sky-ll);border:1px dashed var(--sky);border-radius:12px;padding:11px 14px;margin-top:14px;line-height:1.5}
+
+/* back btn */
+.back{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);font-weight:700;font-size:14px;margin-bottom:16px}
+.back:hover{color:var(--sky-d)}
+
+@media(max-width:960px){
+  #app{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;inset:0 auto 0 0;width:270px;z-index:50;transform:translateX(-100%);transition:.3s;height:100vh
+  }
+  .sidebar.open{transform:none;box-shadow:var(--sh-lg)}
+  .topbar{
+    display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:40;background:rgba(244,250,251,.85);backdrop-filter:blur(10px);
+    padding:12px 18px;margin:-26px -34px 22px;border-bottom:1px solid var(--line)
+  }
+  main{padding:20px 18px 60px}
+  .topbar .tbrand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--sky-d)}
+  .hamb{width:42px;height:42px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:20px}
+  .flash-wrap{grid-template-columns:1fr}
+  .g2,.g3,.g4{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:30px}
+}
+@media(max-width:600px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .hero{padding:24px}
+  h1.page{font-size:25px}
+  .fc-word{font-size:34px}
+  .speak-word{font-size:38px}
+  .word-row .w{min-width:90px;font-size:15px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">С</div>
+      <div>
+        <div class="brand-name">СӨЗ</div>
+        <div class="brand-sub">Қазақ тілі цифрлық мектебі</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-level" id="sideLevel"></div>
+    <div class="side-foot">Қызылорда облыстық байқауына арналған IT өнімі · 2026</div>
+  </aside>
+
+  <div style="min-width:0">
+    <div class="topbar">
+      <button class="hamb" id="hamb">☰</button>
+      <div class="tbrand">СӨЗ</div>
+    </div>
+    <main id="view"></main>
+  </div>
+</div>
+<div id="toast"></div>
+<div id="modalRoot"></div>
+<div class="dict-pop" id="dictPop"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   СӨЗ — Қазақ тілін үйренетін цифрлық платформа
+   Vanilla JS · Web Speech API · localStorage
+   ============================================================ */
+
+/* ---------- ДЕРЕКТЕР ---------- */
+const CATEGORIES = [
+  {id:"salem", name:"Сәлемдесу", icon:"👋"},
+  {id:"otbasy", name:"Отбасы", icon:"👨‍👩‍👧"},
+  {id:"tagam", name:"Тағам", icon:"🍲"},
+  {id:"sandar", name:"Сандар", icon:"🔢"},
+  {id:"tabiat", name:"Табиғат", icon:"🏔️"},
+  {id:"kundelik", name:"Күнделікті", icon:"🏠"},
+  {id:"tuster", name:"Түстер", icon:"🎨"},
+  {id:"uyrenu", name:"Үйрену", icon:"📖"},
+];
+
+const WORDS = [
+  // Сәлемдесу
+  {cat:"salem", word:"Сәлем", pron:"sǝ-lɛm", meaning:"hello / hello (informal)", ex:"— Сәлем, қалайсың?"},
+  {cat:"salem", word:"Қош келдіңіз", pron:"qosh kel-diñiz", meaning:"welcome", ex:"Қош келдіңіз, мектебімізге!"},
+  {cat:"salem", word:"Риза бол", pron:"rıza bol", meaning:"nice to meet you / thank you", ex:"— Риза бол, менді!"},
+  {cat:"salem", word:"Тініп жүрсің бе?", pron:"tı-nıp jür-siñ be", meaning:"are you well?", ex:"Аға, тініп жүрсің бе?"},
+  {cat:"salem", word:"Жақсы", pron:"jaq-sı", meaning:"good / fine", ex:"— Жақсы, рахмет!"},
+  {cat:"salem", word:"Жол болсын", pron:"jol bol-sın", meaning:"safe travels (farewell)", ex:"Жол болсын, жеткіз!"},
+  {cat:"salem", word:"Қайта көрелік", pron:"qayta kö-re-lik", meaning:"see you again", ex:"Қайта көрелік, дос!"},
+  {cat:"salem", word:"Рахмет", pron:"ra-h-met", meaning:"thank you", ex:"Көмектеріңе рахмет!"},
+  // Отбасы
+  {cat:"otbasy", word:"Ана / Шеше", pron:"a-na / şe-se", meaning:"mother", ex:"Шешем кітап оқиды."},
+  {cat:"otbasy", word:"Әке / Ата", pron:"ä-ke / a-ta", meaning:"father", ex:"Атам жұмыстан келді."},
+  {cat:"otbasy", word:"Әже", pron:"ä-je", meaning:"grandmother", ex:"Әжем қатық істеді."},
+  {cat:"otbasy", word:"Аға", pron:"a-ğa", meaning:"older brother", ex:"Ағам мектепте оқиды."},
+  {cat:"otbasy", word:"Әпке", pron:"äp-ke", meaning:"older sister", ex:"Әпкем оқытушы."},
+  {cat:"otbasy", word:"Іні", pron:"i-ni", meaning:"younger brother", ex:"Інім ойын ойнайды."},
+  {cat:"otbasy", word:"Сіңлі", pron:"siñ-li", meaning:"younger sister", ex:"Сінгім асыра оқиды."},
+  {cat:"otbasy", word:"Жұбай", pron:"ju-bay", meaning:"spouse", ex:"Жұбайым жұмыста."},
+  // Тағам
+  {cat:"tagam", word:"Нан", pron:"nan", meaning:"bread", ex:"Нан — тірегіміз."},
+  {cat:"tagam", word:"Сүт", pron:"süt", meaning:"milk", ex:"Таңертең сүт ішемін."},
+  {cat:"tagam", word:"Ет", pron:"et", meaning:"meat", ex:"Қазанқау — дәмді тағам."},
+  {cat:"tagam", word:"Қатық", pron:"qat-ıq", meaning:"fermented milk (kaymak)", ex:"Қатық тәтті шықты."},
+  {cat:"tagam", word:"Шай", pron:"şay", meaning:"tea", ex:"Шаймен демалалық."},
+  {cat:"tagam", word:"Дөңес", pron:"dö-ñes", meaning:"flatbread", ex:"Дөңес жаңа піскен."},
+  {cat:"tagam", word:"Бұқтырма", pron:"bұq-tır-ma", meaning:"porridge", ex:"Бұқтырма таңға жарайды."},
+  {cat:"tagam", word:"Су", pron:"su", meaning:"water", ex:"Су ішіңіз, рахмет."},
+  // Сандар
+  {cat:"sandar", word:"Бір", pron:"bir", meaning:"one (1)", ex:"Бір ақыл — бір бас."},
+  {cat:"sandar", word:"Екі", pron:"e-ki", meaning:"two (2)", ex:"Екі дос бір-біріне жардам."},
+  {cat:"sandar", word:"Үш", pron:"üş", meaning:"three (3)", ex:"Үш түс қосылды."},
+  {cat:"sandar", word:"Төрт", pron:"tört", meaning:"four (4)", ex:"Төрт бұрышы бар."},
+  {cat:"sandar", word:"Бес", pron:"bes", meaning:"five (5)", ex:"Бес күннің ішінде."},
+  {cat:"sandar", word:"Он", pron:"on", meaning:"ten (10)", ex:"Он оқушы келді."},
+  // Табиғат
+  {cat:"tabiat", word:"Тау", pron:"ta-u", meaning:"mountain", ex:"Тауға шықтық."},
+  {cat:"tabiat", word:"Өзен", pron:"ö-zen", meaning:"river", ex:"Өзен суы таза."},
+  {cat:"tabiat", word:"Көл", pron:"köl", meaning:"lake", ex:"Көл жағасында отырдық."},
+  {cat:"tabiat", word:"Аспан", pron:"as-pan", meaning:"sky", ex:"Аспан көк."},
+  {cat:"tabiat", word:"Жұлдыз", pron:"jül-dız", meaning:"star", ex:"Жұлдыз жарқырады."},
+  {cat:"tabiat", word:"Ай", pron:"ay", meaning:"moon", ex:"Ай толды."},
+  {cat:"tabiat", word:"Күн", pron:"kүн", meaning:"sun / day", ex:"Күн шықты."},
+  {cat:"tabiat", word:"Орман", pron:"or-man", meaning:"forest", ex:"Орманда қыс."},
+  // Күнделікті
+  {cat:"kundelik", word:"Үй", pron:"üy", meaning:"house", ex:"Үйді тазалаймын."},
+  {cat:"kundelik", word:"Кітап", pron:"ki-tap", meaning:"book", ex:"Кітап оқимын."},
+  {cat:"kundelik", word:"Мектеп", pron:"mek-tep", meaning:"school", ex:"Мектепке барамын."},
+  {cat:"kundelik", word:"Дос", pron:"dos", meaning:"friend", ex:"Досым келді."},
+  {cat:"kundelik", word:"Жыл", pron:"jıl", meaning:"year", ex:"Жаңа жылға!"},
+  {cat:"kundelik", word:"Ай", pron:"ay", meaning:"month", ex:"Ай бойы жаңбыр жауды."},
+  {cat:"kundelik", word:"Түн", pron:"tün", meaning:"night", ex:"Түнде ұйқым келді."},
+  {cat:"kundelik", word:"Таң", pron:"tañ", meaning:"morning / dawn", ex:"Таңертең ерте тұрам."},
+  // Түстер
+  {cat:"tuster", word:"Ақ", pron:"aq", meaning:"white", ex:"Ақ бұлт жүр."},
+  {cat:"tuster", word:"Қара", pron:"qara", meaning:"black", ex:"Қара түнгі аспан."},
+  {cat:"tuster", word:"Қызыл", pron:"qı-zıl", meaning:"red", ex:"Қызыл гүл әдемі."},
+  {cat:"tuster", word:"Көк", pron:"kök", meaning:"blue", ex:"Көк аспан жайдары."},
+  {cat:"tuster", word:"Сары", pron:"sa-rı", meaning:"yellow", ex:"Сары гүл ашты."},
+  {cat:"tuster", word:"Жасыл", pron:"jas-ıl", meaning:"green", ex:"Жасыл шөп өсті."},
+  {cat:"tuster", word:"Қызғылт", pron:"qız-ğılt", meaning:"pink", ex:"Қызғылт таң атты."},
+  // Үйрену
+  {cat:"uyrenu", word:"Сөз", pron:"söz", meaning:"word", ex:"Сөз — қару."},
+  {cat:"uyrenu", word:"Тіл", pron:"til", meaning:"language", ex:"Тіл — елдің тірегі."},
+  {cat:"uyrenu", word:"Білім", pron:"bi-lim", meaning:"knowledge", ex:"Білім — зор қазына."},
+  {cat:"uyrenu", word:"Оқу", pron:"o-qu", meaning:"to read / studying", ex:"Күн сайын оқимын."},
+  {cat:"uyrenu", word:"Жазу", pron:"ja-zu", meaning:"to write", ex:"Дәптерге жазамын."},
+  {cat:"uyrenu", word:"Діңгүр", pron:"dın-gür", meaning:"to listen", ex:"Сабаққа тыңда."},
+  {cat:"uyrenu", word:"Сөйлеу", pron:"söy-le-u", meaning:"to speak", ex:"Еркін сөйлейміз."},
+  {cat:"uyrenu", word:"Мәтін", pron:"mä-tin", meaning:"text", ex:"Мәтінді оқы."},
+];
+
+/* Grammar lessons */
+const GRAMMAR = [
+  {
+    title:"Сөз таптары", icon:"🧩",
+    intro:"Қазақ тілінде сөздер мағынасы мен грамматикалық қасиеті бойынша бірнеше сөз табына бөлінеді.",
+    blocks:[
+      {h:"Негізгі сөз таптары", p:"Қазақ тілінде 9 сөз табы бар: есім, сын есім, сан есім,代 есім (өткенде: зат есім, белгі есім, сан есім), етістік, жіктеу (тұлғалық, жіктелу), жалғау, бағыш, жұрнақ."},
+      {h:"Мысал", p:"«Кітап оқимын» деген сөйлемде: «кітап» — зат есім, «оқимын» — етістік (жіктелген).", ex:"Мысал: Үлкен бала кітап оқиды."},
+      {h:"Қорытынды", p:"Сөз таптарын ажырату — сөйлем құрудың, сөйлеудің негізі. Әр сөзтіні қызметін білу — тілді дұрыс қолданудың кілті."},
+    ]
+  },
+  {
+    title:"Септік (Жіктеу)", icon:"🧭",
+    intro:"Қазақ тілінде зат есімдер септік жалғауларымен сөйлемдегі қызметін білдіреді. Барлығы 6 септік бар.",
+    blocks:[
+      {h:"Ішкі 4 септік", p:"Негізгі септіктер — заттың сөйлемдегі рөлін көрсетеді."},
+      {h:"Септіктер тізімі", p:"Жіктеу септіктері төмендегідей:",
+       list:[
+         "Зат септік (-, -ы): кім? не? — «кітап, ағаш»",
+         "Күлік септік (-ға, -ге, -ке): кімге? неге? — «кітапқа, ағашқа»",
+         "Күлік септік (-дан, -ден, -тан, -тен): кімнен? ненен? — «кітаптан, ағаштан»",
+         "Күлік септік (-та, -те, -де, -де, -та): қайда? — «кітапта, үйде»",
+       ]},
+      {h:"Маңызды ереже", p:"Септік жалғаулары сөздің соңғы дыбысына байланысты өзгереді. Сыйластық пен қарым-қатынас — қайталанатын тақырып."},
+      {h:"Мысал", p:"Ережені мысал арқылы көрсетейік:", ex:"Мен кітап оқимын → Кітап оқимын менде → Кітап оқиды."},
+    ]
+  },
+  {
+    title:"Жалғаулар мен сөз тіркесі", icon:"🔗",
+    intro:"Қазақ тілі — жалғаулы (агглютинативті) тіл. Бір түбірге бірнеше жалғау жалғануы мүмкін.",
+    blocks:[
+      {h:"Агглютинация", p:"Сөз түбірлеріне жалғаулар тізбектеліп жалғанады, бірақ әр жалғау өз мағынасын сақтайды."},
+      {h:"Мысал: «кітаптарымды оқыдым»", p:"Бұл сөз түбірінен тұрады:",
+       list:[
+         "кітап — сөз түбірі",
+         "-тар — көптік жалғауы",
+         "-ы — иелік (менің)",
+         "-ді — күлік септік (нанды)",
+         "→ кітап-тар-ы-м-ды",
+       ]},
+      {h:"Сөз тіркесі", p:"Сөз тіркесі — мағыналық тұрғыдан байланысқан екі немесе одан көп сөз. Мысалы: «көк аспан», «үлкен үй»."},
+      {h:"Қорытынды", p:"Жалғаулар жүйесін түсіну — қазақ тілін терең меңгерудің кілті. Күнделікті сөйлемдер арқылы жатталады."},
+    ]
+  },
+  {
+    title:"Етістік және көмекші етістік", icon:"⚡",
+    intro:"Етістік — заттың қимылын, іс-әрекетін, күйін білдіретін сөз табы.",
+    blocks:[
+      {h:"Етістіктің түрлері", p:"Етістіктер уақыт, тұлға, сандық, мәнділік категориялары бойынша жіктеледі."},
+      {h:"Уақыт категориялары", p:"Көп ұйымдастырылған уақыттар:",
+       list:[
+         "Өткен шақ: «оқидым, оқыдым»",
+         "Осы шақ: «оқимын, оқимын»",
+         "Келешек шақ: «оқимын, оқимын»",
+       ]},
+      {h:"Тұлға категориясы", p:"Етістік 1-тұлға (мен, біз), 2-тұлға (сен, сіздер), 3-тұлға (ол, олар) бойынша жіктеледі."},
+      {h:"Мысал", p:"Ережені мысал арқылы көрсетейік:", ex:"Мен оқимын → Сен оқисың → Ол оқиды."},
+    ]
+  },
+];
+
+/* Reading texts with interactive dictionary */
+const READINGS = [
+  {
+    title:"Қазақ даласындағы күн",
+    level:"Орта деңгей",
+    text:`<span class="rword" data-w="Таң">Таң</span> атқанда <span class="rword" data-w="даға">даға</span> ұясындағы қызыл қасқыр қанаттарын жайды. <span class="rword" data-w="Көк">Көк</span> <span class="rword" data-w="аспан">аспан</span> астында <span class="rword" data-w="шөп">шөп</span> қырылған, <span class="rword" data-w="гүл">гүл</span> ашқан. <span class="rword" data-w="Өзен">Өзен</span> бойында <span class="rword" data-w="көл">көл</span> суы <span class="rword" data-w="айналасында">айналасында</span> жарқырайды. Бұл — <span class="rword" data-w="табиғат">табиғат</span> пен адамның үйлесімді өмірінің көрінісі.`,
+    dict:{
+      "Таң":"morning / dawn", "даға":"steppe / plain", "Көк":"blue", "аспан":"sky",
+      "шөп":"grass", "гүл":"flower", "Өзен":"river", "көл":"lake",
+      "айналасында":"around / in the surroundings", "табиғат":"nature"
+    },
+    q:[
+      {q:"Далада не жарқырайды?", o:["Өзен суы","Күн","Жұлдыз"], a:0},
+      {q:"«Таң» сөзінің мағынасы не?", o:["night","morning","winter"], a:1},
+      {q:"Бұл мәтіндегі негізгі тақырып?", o:["Қала","Табиғат пен адам","Тағам"], a:1},
+    ]
+  },
+  {
+    title:"Білімнің құндылығы",
+    level:"Орта деңгей",
+    text:`<span class="rword" data-w="Білім">Білім</span> — ең зор <span class="rword" data-w="қазына">қазына</span>. Оны алу үшін <span class="rword" data-w="күш">күш</span> пен <span class="rword" data-w="сабыр">сабыр</span> керек. <span class="rword" data-w="Оқу">Оқу</span> — <span class="rword" data-w="адам">адам</span>ның <span class="rword" data-w="өсуіне">өсуіне"> көмектесетін ең басты құрал. <span class="rword" data-w="Мектеп">Мектеп</span> — <span class="rword" data-w="дос">дос</span> пен <span class="rword" data-w="аға">аға</span> жолындағы <span class="rword" data-w="алғашқы">алғашқы"> қадам.`,
+    dict:{
+      "Білім":"knowledge", "қазына":"treasure", "күш":"strength / effort", "сабыр":"patience",
+      "Оқу":"to read / studying", "адам":"person / human", "өсуіне":"for the growth",
+      "Мектеп":"school", "дос":"friend", "аға":"older brother", "алғашқы":"first / initial"
+    },
+    q:[
+      {q:"«Қазына» сөзінің мағынасы не?", o:["treasure","water","mountain"], a:0},
+      {q:"Білім алу үшін не керек?", o:["Only luck","Күш пен сабыр","Nothing"], a:1},
+      {q:"Мектеп қалай сипатталған?", o:["Қорқынышты жер","Алғашқы қадам","Тамақ ішетін жер"], a:1},
+    ]
+  },
+];
+
+/* Proverbs */
+const PROVERBS = [
+  {t:"Тіл — елдің тірегі", m:"Тіл — халықтың тірегі, біріктіруші құралы."},
+  {t:"Білім — зор қазына", m:"Білім — бағасы қымбат, жоғалмайтын қазына."},
+  {t:"Сөз астында сұлулық, тіл астында тіректік", m:"Сөздің сұлулығы, тілдің құндылығы."},
+  {t:"Ақыл — бауырыңда, тіл — аузыңда", m:"Ақыл іштей, сөз ауыздан шығады."},
+  {t:"Жүректе болмай, тілден шықпайды", m:"Жүректе болмаса, тілден шықпайды."},
+  {t:"Бір сөз — бір қазына", m:"Әр сөз — бір қазына, мұқият сөйле."},
+  {t:"Жақсы сөз — жақсы нәр", m:"Жақсы сөз — адамға жақсы нәр, пайда."},
+  {t:"Сөзді тілден, сұлулықты жүзден сұра", m:"Сөздің мағынасын тілден сұра."},
+  {t:"Білімсіз — білек, білімді — билер", m:"Білімсіз — тек қол, білімді — билер."},
+  {t:"Тіл алысқа жетіп, жүрек жақынға жетер", m:"Тіл алысқа жетіп, жүрек жақынға жетеді."},
+];
+
+/* Quiz bank */
+const QUIZ = [
+  {q:"«Ана» сөзінің мағынасы не?", o:["father","mother","sister","friend"], a:1},
+  {q:"«Қатық» қазақша қалай аударылады?", o:["cheese","kaymak (fermented milk)","bread","water"], a:1},
+  {q:"«Бес» саны қай сан?", o:["3","4","5","6"], a:2},
+  {q:"«Көк» түсі қай түс?", o:["red","green","blue","black"], a:2},
+  {q:"«Өзен» дегеніміз не?", o:["mountain","river","house","book"], a:1},
+  {q:"«Рахмет» сөзі нені білдіреді?", o:["hello","thank you","goodbye","please"], a:1},
+  {q:"«Мектеп» сөзінің мағынасы?", o:["hospital","school","market","street"], a:1},
+  {q:"«Жұлдыз» қазақша қандай аударылады?", o:["sun","moon","star","cloud"], a:2},
+  {q:"«Үй» сөзі нені білдіреді?", o:["house","car","tree","food"], a:0},
+  {q:"«Дос» сөзінің мағынасы не?", o:["enemy","teacher","friend","family"], a:2},
+  {q:"«Тіл» сөзі нені білдіреді?", o:["language","hand","head","water"], a:0},
+  {q:"«Жыл» сөзі нені білдіреді?", o:["month","day","year","hour"], a:2},
+];
+
+const BADGES = [
+  {id:"first", ico:"🌱", t:"Бірін қадам", d:"Алғашқы сөзіңді меңгер"},
+  {id:"w10", ico:"📚", t:"10 сөз", d:"10 сөзді меңгер"},
+  {id:"w25", ico:"🔥", t:"25 сөз", d:"25 сөзді меңгер"},
+  {id:"quiz", ico:"🏆", t:"Алғашқы тест", d:"Тестті аяқта"},
+  {id:"gram", ico:"🧠", t:"Грамматика құділеті", d:"Барлық сабақты оқы"},
+  {id:"read", ico:"📖", t:"Оқушы", d:"Оқу тапсырмасын аяқта"},
+  {id:"speak", ico:"🎤", t:"Еркін сөйлеуші", d:"Сөйлеу жаттығуын орында"},
+  {id:"xp500", ico:"⚡", t:"500 XP", d:"500 ұпай жина"},
+];
+
+/* ---------- STATE ---------- */
+const SKEY="sóz_state_v1";
+let S = load();
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(SKEY));if(d&&typeof d.xp==="number")return d;}catch(e){}
+  return {xp:0, streak:0, lastDay:null, learned:{}, quizBest:0, quizDone:0,
+         grammarRead:[], readDone:[], speakDone:0, badges:[], today:""};
+}
+function save(){localStorage.setItem(SKEY,JSON.stringify(S));}
+function dayStr(){return new Date().toDateString();}
+function bumpStreak(){
+  const t=dayStr();
+  if(S.lastDay===t) return;
+  const y=new Date(); y.setDate(y.getDate()-1);
+  if(S.lastDay===y.toDateString()) S.streak=(S.streak||0)+1; else S.streak=1;
+  S.lastDay=t; save();
+}
+function levelInfo(xp){
+  const titles=["Бастаушы","Кіші оқушы","Орта оқушы","Үздік оқушы","Тіл шебері"];
+  const lv=Math.floor(xp/150)+1;
+  const idx=Math.min(titles.length-1,Math.floor((lv-1)/2));
+  const inLv=xp-(lv-1)*150;
+  return {lv, title:titles[idx], inLv, need:150, pct:Math.round(inLv/150*100)};
+}
+function toast(msg,ms=2200){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),ms);
+}
+function addXP(n,msg){
+  S.xp+=n; save();
+  if(msg) toast("+"+n+" XP · "+msg);
+  updateLevelUI();
+  checkBadges();
+}
+function checkBadges(){
+  const wl=Object.keys(S.learned).length;
+  const g=GRAMMAR.filter(g=>S.grammarRead.includes(g.title)).length;
+  const map={
+    first: wl>=1, w10: wl>=10, w25: wl>=25,
+    quiz: S.quizDone>=1, gram: g>=GRAMMAR.length,
+    read: S.readDone.length>=1, speak: S.speakDone>=1,
+    xp500: S.xp>=500,
+  };
+  let got=false;
+  BADGES.forEach(b=>{ if(map[b.id]&&!S.badges.includes(b.id)){S.badges.push(b.id);got=true;
+    setTimeout(()=>toast("🏅 Медаль алынды: "+b.t),600);} });
+  if(got) save();
+}
+
+/* ---------- WEB SPEECH ---------- */
+let voices=[];
+function loadVoices(){
+  if(!("speechSynthesis" in window)) return;
+  voices=speechSynthesis.getVoices();
+}
+if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function pickVoice(){
+  if(!voices.length) loadVoices();
+  const kk=voices.find(v=>/^(kk|kz)/i.test(v.lang))||voices.find(v=>/kk/i.test(v.lang));
+  if(kk) return kk;
+  const ru=voices.find(v=>/^(ru)/i.test(v.lang));
+  return ru||voices[0]||null;
+}
+function speak(text){
+  if(!("speechSynthesis" in window)){ toast("Бұл браузерде дауыс қолдаусыз"); return; }
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  const v=pickVoice();
+  if(v){ u.voice=v; u.lang=v.lang; } else { u.lang="kk-KZ"; }
+  u.rate=0.92; u.pitch=1;
+  speechSynthesis.speak(u);
+}
+
+/* Recognition (pronunciation check) */
+let recog=null, recogSupported=false;
+function initRecog(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return false;
+  try{ recog=new SR(); recog.lang="kk-KZ"; recog.interimResults=true; recog.maxAlternatives=1; recogSupported=true; }
+  catch(e){ recogSupported=false; }
+  return recogSupported;
+}
+
+/* ---------- NAV ---------- */
+const NAV=[
+  {id:"home", ico:"🏠", t:"Басты бет"},
+  {id:"dict", ico:"📚", t:"Сөздік"},
+  {id:"gram", ico:"🧩", t:"Грамматика"},
+  {id:"read", ico:"📖", t:"Оқу"},
+  {id:"listen", ico:"🎧", t:"Тыңдау"},
+  {id:"speak", ico:"🎤", t:"Сөйлеу"},
+  {id:"quiz", ico:"🧠", t:"Тест"},
+  {id:"prov", ico:"🌾", t:"Мақал-мәтел"},
+  {id:"prog", ico:"📈", t:"Прогресс"},
+];
+let cur="home", curParam=null;
+function buildNav(){
+  const n=document.getElementById("nav");
+  n.innerHTML=NAV.map(x=>`<button class="nav-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="ico">${x.ico}</span>${x.t}</button>`).join("");
+}
+function go(view,param){
+  cur=view; curParam=param||null;
+  document.getElementById("dictPop")?.classList.remove("show");
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.v===view));
+  document.getElementById("sidebar").classList.remove("open");
+  window.scrollTo({top:0,behavior:"smooth"});
+  render();
+}
+function render(){
+  const v=document.getElementById("view");
+  const map={home:vHome,dict:vDict,gram:vGram,read:vRead,listen:vListen,speak:vSpeak,quiz:vQuiz,prov:vProv,prog:vProg};
+  v.innerHTML="<div class='view'>"+(map[cur]||vHome)()+"</div>";
+  bind();
+  updateLevelUI();
+}
+
+/* ---------- LEVEL UI ---------- */
+function updateLevelUI(){
+  const L=levelInfo(S.xp);
+  const el=document.getElementById("sideLevel");
+  if(!el) return;
+  el.innerHTML=`<div class="lv"><span>Дәреже ${L.lv}</span><span>${L.title}</span></div>
+    <div class="xpbar"><i style="width:${L.pct}%"></i></div>
+    <div style="font-size:11px;opacity:.8;margin-top:6px">${S.xp} / ${L.lv*150} XP</div>`;
+}
+
+/* ---------- HOME ---------- */
+function vHome(){
+  const dayIdx=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);
+  const w=WORDS[dayIdx%WORDS.length];
+  const wl=Object.keys(S.learned).length;
+  const L=levelInfo(S.xp);
+  const tiles=[
+    {v:"dict", ico:"📚", bg:"var(--sky-l)", t:"Сөздік", d:`${WORDS.length} сөз · ${wl} меңгерілді`},
+    {v:"gram", ico:"🧩", bg:"var(--gold-l)", t:"Грамматика", d:"4 сабақ · ережелер"},
+    {v:"read", ico:"📖", bg:"var(--green-l)", t:"Оқу", d:"Интерактивті мәтіндер"},
+    {v:"listen", ico:"🎧", bg:"var(--sky-l)", t:"Тыңдау", d:"Дауыс арқылы таныс"},
+    {v:"speak", ico:"🎤", bg:"var(--red-l)", t:"Сөйлеу", d:"Айтып, тексер"},
+    {v:"quiz", ico:"🧠", bg:"var(--gold-l)", t:"Тест", d:`Ең жақсы: ${S.quizBest}%`},
+  ];
+  return `
+  <div class="hero">
+    <div class="badge-pill">⚡ ${S.streak} күндік үздік · ${L.lv}-дәреже</div>
+    <h1>Қазақ тілін заманауи жолмен үйрен</h1>
+    <p>Сөздік, грамматика, оқу, тыңдау, сөйлеу және тест — барлығы бір платформада. Дауыс технологиясы және жасанды интеллект негізіндегі интерактивті жаттығулар.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="go('dict')">🚀 Жаттығуды баста</button>
+      <button class="btn btn-ghost" onclick="go('quiz')">🧠 Тест тап</button>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="stat"><div class="s-ico">📚</div><div><div class="s-num">${wl}/${WORDS.length}</div><div class="s-lbl">Меңгерілген сөз</div></div></div>
+    <div class="stat gold"><div class="s-ico">⚡</div><div><div class="s-num">${S.xp}</div><div class="s-lbl">Жиналған XP</div></div></div>
+    <div class="stat green"><div class="s-ico">🔥</div><div><div class="s-num">${S.streak}</div><div class="s-lbl">Күндік үздік</div></div></div>
+    <div class="stat"><div class="s-ico">🏆</div><div><div class="s-num">${S.badges.length}</div><div class="s-lbl">Медаль</div></div></div>
+  </div>
+
+  <div class="card pad wotd" style="margin-top:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <div>
+        <div class="eyebrow">Бүгінің сөзі</div>
+        <div class="w" style="margin-top:6px">${w.word}</div>
+        <div class="m">${w.meaning} · <i>${w.ex}</i></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="speak-btn" onclick="speak('${w.word}')" title="Дауысымен тыңда">🔊</button>
+        <button class="btn btn-soft" onclick="quickLearn('${w.word}')">Білемін ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><h2>Бөлімдер</h2></div>
+  <div class="grid g3">
+    ${tiles.map(t=>`<button class="tile" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}
+  </div>
+
+  <div class="sec-head"><h2>Мақал-мәтелдер</h2><button class="link-more" onclick="go('prov')">Барлығы →</button></div>
+  <div class="grid g3">${PROVERBS.slice(0,3).map((p,i)=>provCard(p,i)).join("")}</div>`;
+}
+
+/* ---------- DICT ---------- */
+function vDict(){
+  const cat=curParam||CATEGORIES[0].id;
+  const active=CATEGORIES.find(c=>c.id===cat);
+  const words=WORDS.filter(w=>w.cat===cat);
+  const wl=Object.keys(S.learned).length;
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">📚 Сөздік</h1>
+  <p class="lead">Сөздерді карточка түрінде меңгер. Ассындап жаса — жаңа сөз, жаңа мағына, жаңа сөйлем.</p>
+  <div class="pills">${CATEGORIES.map(c=>`<button class="pill ${c.id===cat?'active':''}" onclick="go('dict','${c.id}')">${c.icon} ${c.name}</button>`).join("")}</div>
+  <div class="flash-wrap">
+    <div>
+      <div class="flashcard" id="fc" onclick="flipCard()">
+        <div class="fc-inner">
+          <div class="fc-face fc-front">
+            <div class="fc-tag">${active.icon} ${active.name}</div>
+            <div class="fc-word" id="fcWord"></div>
+            <div class="fc-pron" id="fcPron"></div>
+            <button class="speak-btn" id="fcSpeak" onclick="event.stopPropagation()" style="background:rgba(255,255,255,.2);color:#fff" title="Дауысымен">🔊</button>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-tag">Мағынасы</div>
+            <div class="fc-mean" id="fcMean"></div>
+            <div class="fc-ex" id="fcEx"></div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-caption">👆 Карточкаға бассаңыз — мағынасы айналады</div>
+      <div class="fc-controls">
+        <button class="btn btn-line btn-sm" onclick="flashNext(-1)">← Алдыңғы</button>
+        <button class="btn btn-sky btn-sm" onclick="flashNext(1)">Келесі →</button>
+        <button class="btn btn-primary btn-sm" onclick="learnCurrent()">Білемін ✓ +10</button>
+      </div>
+      <div class="known-count" id="fcCount"></div>
+    </div>
+    <div class="fc-side">
+      <div class="card pad">
+        <div class="eyebrow" style="margin-bottom:10px">${active.icon} ${active.name} · сөз тізімі</div>
+        <div id="dictList" style="display:flex;flex-direction:column;gap:9px;max-height:420px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </div>`;
+}
+let flashIdx=0;
+function curCatWords(){const cat=curParam||CATEGORIES[0].id;return WORDS.filter(w=>w.cat===cat);}
+function renderFlash(){
+  const words=curCatWords();
+  if(!words.length) return;
+  flashIdx=((flashIdx%words.length)+words.length)%words.length;
+  const w=words[flashIdx];
+  const el=document.getElementById("fc");
+  if(el) el.classList.remove("flip");
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
+  set("fcWord",w.word); set("fcPron","/"+w.pron+"/"); set("fcMean",w.meaning); set("fcEx","«"+w.ex+"»");
+  const sp=document.getElementById("fcSpeak");
+  if(sp) sp.onclick=(e)=>{e.stopPropagation();speak(w.word);};
+  const known=words.filter(x=>S.learned[x.word]).length;
+  const c=document.getElementById("fcCount");
+  if(c) c.textContent=`Бұл санатта ${words.length} сөз · меңгерілген: ${known} (${Math.round(known/words.length*100)}%)`;
+  renderDictList(words);
+}
+function renderDictList(words){
+  const el=document.getElementById("dictList");
+  if(!el) return;
+  el.innerHTML=words.map(w=>{
+    const kn=S.learned[w.word];
+    return `<div class="word-row"><span class="w">${w.word}</span><span class="m">${w.meaning}</span>
+      <button class="speak-btn" onclick="speak('${w.word.replace(/'/g,"\\'")}')">🔊</button>
+      <span class="st ${kn?'st-known':'st-new'}">${kn?'Меңгерілді':'Жаңа'}</span></div>`;
+  }).join("");
+}
+function flipCard(){document.getElementById("fc")?.classList.toggle("flip");}
+function flashNext(d){flashIdx+=d;renderFlash();}
+function quickLearn(word){
+  if(!S.learned[word]){S.learned[word]=Date.now();save();addXP(5,"сөз меңгерілді");}
+  else toast("Бұл сөзді алдымен меңгердің");
+}
+function learnCurrent(){
+  const words=curCatWords(); if(!words.length) return;
+  const w=words[flashIdx];
+  if(!S.learned[w.word]){S.learned[w.word]=Date.now();save();addXP(10,"сөз меңгерілді");}
+  else addXP(2,"қайта қарау");
+  flashNext(1);
+}
+
+/* ---------- GRAMMAR ---------- */
+function vGram(){
+  if(!curParam){
+    return `
+    <div class="back" onclick="go('home')">← Басты бетке</div>
+    <h1 class="page">🧩 Грамматика</h1>
+    <p class="lead">Қазақ тілінің негізгі ережелерін сабақ түрінде меңгер. Сабақты аяқтаған сайын +20 XP.</p>
+    <div class="grid" style="gap:12px">
+      ${GRAMMAR.map((g,i)=>{
+        const done=S.grammarRead.includes(g.title);
+        return `<div class="lesson-item ${done?'done':''}" onclick="go('gram','${g.title}')">
+          <div class="lesson-num">${done?'✓':(i+1)}</div>
+          <div><h4>${g.title}</h4><p>${g.intro.slice(0,80)}…</p></div>
+          <span style="margin-left:auto;color:${done?'var(--green)':'var(--ink-3)'}">${done?'Оқылды':'→'}</span>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }
+  const g=GRAMMAR.find(x=>x.title===curParam);
+  if(!g) return vGram();
+  const done=S.grammarRead.includes(g.title);
+  return `
+  <div class="back" onclick="go('gram')">← Грамматика тізіміне</div>
+  <div class="card pad gram-body">
+    <h3>${g.title}</h3>
+    <p class="lead" style="margin-bottom:0">${g.intro}</p>
+    ${g.blocks.map(b=>`<div class="block"><h4>${b.h}</h4><p>${b.p}</p>
+      ${b.list?`<ul>${b.list.map(l=>`<li>${l}</li>`).join("")}</ul>`:""}
+      ${b.ex?`<div class="example-line">💡 ${b.ex}</div>`:""}
+    </div>`).join("")}
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn ${done?'btn-line':'btn-primary'}" onclick="markGram('${g.title}')">${done?'✓ Оқылды':'Сабақты аяқтау +20'}</button>
+      <button class="btn btn-soft" onclick="go('gram')">Тізіме қайту</button>
+    </div>
+  </div>`;
+}
+function markGram(t){
+  if(!S.grammarRead.includes(t)){S.grammarRead.push(t);save();addXP(20,"сабақ оқылды");}
+  else toast("Бұл сабақты алдымен оқыдың");
+  go('gram');
+}
+
+/* ---------- READING ---------- */
+function vRead(){
+  if(!curParam){
+    return `
+    <div class="back" onclick="go('home')">← Басты бетке</div>
+    <h1 class="page">📖 Оқу</h1>
+    <p class="lead">Мәтінді оқы, сөздік бойынша сөздердің мағынасын анықта, соңында сауалға жауап бер.</p>
+    <div class="grid g2">
+      ${READINGS.map((r,i)=>{
+        const done=S.readDone.includes(r.title);
+        return `<button class="tile" onclick="go('read','${i}')"><div class="t-ico" style="background:${done?'var(--green-l)':'var(--sky-l)'}">${done?'✅':'📖'}</div><h3>${r.title}</h3><p>${r.level} · ${r.q.length} сұрақ</p><span class="go">${done?'Қайта оқу →':'Оқу →'}</span></button>`;
+      }).join("")}
+    </div>`;
+  }
+  const r=READINGS[+curParam];
+  const done=S.readDone.includes(r.title);
+  return `
+  <div class="back" onclick="go('read')">← Оқу тізіміне</div>
+  <div class="card read-card">
+    <div class="eyebrow" style="margin-bottom:6px">${r.level}</div>
+    <h1 class="page" style="font-size:24px">${r.title}</h1>
+    <div class="read-text" style="margin-top:16px">${r.text}</div>
+    <div class="note">💡 Ассылды сөздердің асты сызылған — оған бассаңыз мағынасы көрсетіледі. Оқығаннан кейін төмендегі сұрақтарға жауап бер.</div>
+  </div>
+  <div class="sec-head"><h2>Түсінікті ме?</h2></div>
+  <div id="readQ"></div>
+  <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+    <button class="btn ${done?'btn-line':'btn-primary'}" id="readDoneBtn" onclick="markRead('${r.title}')">${done?'✓ Аяқталды':'Оқуды аяқтау +30'}</button>
+    <button class="btn btn-soft" onclick="speak('${r.title.replace(/'/g,"\\'")}')">🔊 Тақырыпты тыңда</button>
+  </div>`;
+}
+function renderReadQ(){
+  const r=READINGS[+curParam]; if(!r) return;
+  const el=document.getElementById("readQ");
+  if(!el) return;
+  el.innerHTML=r.q.map((q,qi)=>`
+    <div class="card pad" style="margin-bottom:14px">
+      <div class="quiz-q" style="font-size:16px">${qi+1}. ${q.q}</div>
+      ${q.o.map((o,oi)=>`<button class="opt" data-q="${qi}" data-o="${oi}" onclick="ansRead(this)">${o}</button>`).join("")}
+    </div>`).join("");
+}
+let readScore=0;
+function ansRead(btn){
+  const qi=btn.dataset.q, oi=+btn.dataset.o;
+  const r=READINGS[+curParam]; const q=r.q[qi];
+  const box=btn.parentElement;
+  box.querySelectorAll(".opt").forEach(b=>{
+    b.disabled=true;
+    if(+b.dataset.o===q.a) b.classList.add("correct");
+    else if(b===btn) b.classList.add("wrong");
+  });
+  if(+oi===q.a){readScore++;addXP(5,"дұрыс жауап");}
+}
+function markRead(t){
+  if(!S.readDone.includes(t)){S.readDone.push(t);save();addXP(30,"оқу аяқталды");}
+  else toast("Бұл мәтінді алдымен оқыдың");
+  go('read');
+}
+
+/* ---------- LISTENING ---------- */
+function vListen(){
+  const words=WORDS;
+  const item=words[Math.floor(Math.random()*words.length)];
+  let opts=[item.word];
+  while(opts.length<3){const x=words[Math.floor(Math.random()*words.length)].word;if(!opts.includes(x))opts.push(x);}
+  opts.sort(()=>Math.random()-.5);
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🎧 Тыңдау</h1>
+  <p class="lead">Сөзді дауысымен тыңдап, дұрыс нұсқаны тап. Әр дұрыс жауап +15 XP.</p>
+  <div class="card pad" style="text-align:center;max-width:560px;margin:0 auto">
+    <div class="listen-play">🎧</div>
+    <div style="font-size:15px;color:var(--ink-2);font-weight:700;margin:10px 0 6px">Қай сөз айтылды?</div>
+    <button class="mic-btn" onclick="speak('${item.word.replace(/'/g,"\\'")}')" title="Тыңдау">▶️</button>
+    <div class="rec-text" id="lsHint">Бастап «Тыңдау» батырмасына басыңыз</div>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-top:18px" id="lsOpts">
+      ${opts.map((o,i)=>`<button class="opt" data-a="${i}" data-c="${o===item.word}" onclick="ansListen(this)">${o}</button>`).join("")}
+    </div>
+    <button class="btn btn-soft" style="margin-top:16px" onclick="newListen()">🔄 Жаңа сөз</button>
+  </div>
+  <div class="note" style="max-width:560px;margin:16px auto 0">ℹ️ Дауыс қолдауы браузер мен құрылғыдағы қазақша/орысша дауысқа байланысты. Ең жақсы нәтиже Chrome-де.</div>`;
+}
+function newListen(){go('listen');}
+function ansListen(btn){
+  const good=btn.dataset.c==="true";
+  const box=btn.parentElement;
+  box.querySelectorAll(".opt").forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.c==="true") b.classList.add("correct");
+    else if(b===btn) b.classList.add("wrong");
+  });
+  const h=document.getElementById("lsHint");
+  if(good){ if(h) h.textContent="✅ Дұрыс! Жақсы тыңдадың."; addXP(15,"тыңдау дұрыс"); }
+  else { if(h) h.textContent="❌ Қате. Дұрыс жауап жасыл."; }
+  setTimeout(()=>{ if(confirm("")) {} },0);
+}
+
+/* ---------- SPEAKING ---------- */
+function vSpeak(){
+  const words=WORDS;
+  const item=words[Math.floor(Math.random()*words.length)];
+  const ok=initRecog();
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🎤 Сөйлеу</h1>
+  <p class="lead">Сөзді дауысымен айтып, микрофонға айтыңыз. Жүйе сөзіңізді таниды және кері байланыс береді.</p>
+  <div class="card pad speaking-stage" style="max-width:560px;margin:0 auto">
+    <div class="eyebrow" style="margin-bottom:10px">Бұл сөзді айтыңыз:</div>
+    <div class="speak-word">${item.word}</div>
+    <div style="color:var(--ink-2);font-style:italic;margin-top:6px">/${item.pron}/ · ${item.meaning}</div>
+    ${ok
+      ?`<button class="mic-btn" id="micBtn" onclick="toggleMic('${item.word}')">🎤</button>
+        <div class="rec-text" id="recText">Микрофонға басып, сөзді айтыңыз</div>`
+      :`<div class="note" style="text-align:center;margin:20px 0">⚠️ Бұл браузерде сөйлеу тану қолдаусыз (Chrome немесе Edge қолданыңыз). Дауысымен тыңдап, өздігіңізден айтып жаттала аласыз.</div>`}
+    <button class="btn btn-soft" onclick="speak('${item.word.replace(/'/g,"\\'")}')" style="margin-top:14px">🔊 Дауысымен тыңдау</button>
+    <div style="margin-top:16px;display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-primary btn-sm" onclick="finishSpeak()">Аяқтау +10</button>
+      <button class="btn btn-line btn-sm" onclick="go('speak')">🔄 Жаңа сөз</button>
+    </div>
+  </div>`;
+}
+let listening=false;
+function toggleMic(target){
+  if(!recog){ toast("Сөйлеу тану қолдаусыз"); return; }
+  const btn=document.getElementById("micBtn");
+  const txt=document.getElementById("recText");
+  if(listening){ recog.stop(); return; }
+  listening=true;
+  btn.classList.add("rec"); btn.textContent="⏹";
+  if(txt) txt.textContent="Тыңдап жатырмын… айтыңыз";
+  recog.onresult=(e)=>{
+    const said=e.results[0][0].transcript.trim();
+    if(txt) txt.textContent="Естимін: «"+said+"»";
+    const norm=s=>s.toLowerCase().replace(/[^\p{L}\s]/gu,"").trim();
+    const t=norm(target), s=norm(said);
+    if(s===t||s.includes(t)||t.includes(s)){ if(txt) txt.textContent="✅ Нақты айтылды! Дәл айтылған."; addXP(10,"сөз айтылды"); finishSpeakSilent(); }
+    else { if(txt) txt.textContent="🔁 Тағы бір рет айтып көріңіз (мін: "+target+")"; }
+  };
+  recog.onend=()=>{ listening=false; if(btn){btn.classList.remove("rec");btn.textContent="🎤";} };
+  recog.onerror=()=>{ if(txt) txt.textContent="⚠️ Сөз танылмады, қайта көріңіз"; listening=false; if(btn){btn.classList.remove("rec");btn.textContent="🎤";} };
+  try{ recog.start(); }catch(e){ listening=false; if(btn){btn.classList.remove("rec");btn.textContent="🎤";} }
+}
+function finishSpeak(){ if(!S.badges) save(); S.speakDone++; save(); addXP(10,"сөйлеу жаттығуы"); go('speak'); }
+function finishSpeakSilent(){ S.speakDone++; save(); }
+
+/* ---------- QUIZ ---------- */
+let quizOrder=[], quizPos=0, quizRight=0, quizStarted=false;
+function vQuiz(){
+  if(!quizStarted){
+    quizOrder=[...QUIZ].sort(()=>Math.random()-.5).slice(0,10);
+    quizPos=0; quizRight=0; quizStarted=true;
+  }
+  if(quizPos>=quizOrder.length) return quizResult();
+  const q=quizOrder[quizPos];
+  const pct=Math.round(quizPos/quizOrder.length*100);
+  return `
+  <div class="back" onclick="quizReset()">← Тест басына</div>
+  <h1 class="page">🧠 Тест</h1>
+  <p class="lead">Қазақша сөздер мен мағыналарды дұрыс тап. ${quizOrder.length} сұрақ.</p>
+  <div class="score-chip" style="margin-bottom:14px">⚡ Дұрыс: ${quizRight}</div>
+  <div class="quiz-progress"><i style="width:${pct}%"></i></div>
+  <div class="card pad">
+    <div style="font-size:12.5px;color:var(--ink-3);font-weight:700;margin-bottom:8px">Сұрақ ${quizPos+1} / ${quizOrder.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div id="qOpts">
+      ${q.o.map((o,i)=>`<button class="opt" onclick="ansQuiz(${i})">${o}</button>`).join("")}
+    </div>
+  </div>`;
+}
+function ansQuiz(i){
+  const q=quizOrder[quizPos];
+  document.querySelectorAll("#qOpts .opt").forEach((b,bi)=>{
+    b.disabled=true;
+    if(bi===q.a) b.classList.add("correct");
+    else if(bi===i) b.classList.add("wrong");
+  });
+  if(i===q.a){ quizRight++; addXP(5,"дұрыс жауап"); }
+  setTimeout(()=>{ quizPos++; render(); },1100);
+}
+function quizResult(){
+  const total=quizOrder.length;
+  const score=Math.round(quizRight/total*100);
+  S.quizDone++;
+  if(score>S.quizBest) S.quizBest=score;
+  save();
+  if(score>=50){ addXP(25, score>=80?"тест тапталды (өте жақсы)":"тест тапталды"); }
+  const msg=score>=80?"Өте жақсы! 🏆":score>=60?"Жақсы нәтиже! 💪":score>=40?"Жарайды, талдау жалғаса. 📈":"Қайталап жаттала. 📚";
+  return `
+  <div class="back" onclick="quizReset()">← Жаңа тест</div>
+  <div class="card pad" style="text-align:center;max-width:560px;margin:0 auto">
+    <div style="font-size:60px">${score>=80?'🏆':score>=60?'🎉':score>=40?'👍':'📖'}</div>
+    <div class="result-big" style="margin:10px 0">${score}%</div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">${quizRight} / ${total} дұрыс</div>
+    <p class="lead" style="margin:0 auto 20px">${msg}</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="quizReset()">🔄 Тағы тапсыру</button>
+      <button class="btn btn-soft" onclick="go('dict')">📚 Сөздікке</button>
+    </div>
+  </div>`;
+}
+function quizReset(){ quizStarted=false; go('quiz'); }
+
+/* ---------- PROVERBS ---------- */
+function provCard(p,i){
+  return `<div class="prov-card" onclick="this.classList.toggle('flip')">
+    <div class="prov-inner">
+      <div class="prov-face prov-front"><div class="q">«${p.t}»</div><div class="tap">бас →</div></div>
+      <div class="prov-face prov-back"><div class="m">${p.m}</div></div>
+    </div>
+  </div>`;
+}
+function vProv(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🌾 Мақал-мәтелдер</h1>
+  <p class="lead">Қазақ халқының даналығы — мақал-мәтелдер. Карточкаға бассаңыз, мағынасы көрсетіледі.</p>
+  <div class="grid g3">${PROVERBS.map((p,i)=>provCard(p,i)).join("")}</div>`;
+}
+
+/* ---------- PROGRESS ---------- */
+function vProg(){
+  const wl=Object.keys(S.learned).length;
+  const L=levelInfo(S.xp);
+  const ringPct=Math.min(100,L.pct);
+  const C=2*Math.PI*62;
+  const off=C*(1-ringPct/100);
+  const counts={
+    words:wl+"/"+WORDS.length,
+    quiz:S.quizBest+"%",
+    gram:S.grammarRead.length+"/"+GRAMMAR.length,
+    read:S.readDone.length+"/"+READINGS.length,
+  };
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">📈 Прогресс</h1>
+  <p class="lead">Өсіміңізді, меңгерген сөздеріңізді және алған медальдарыңызды көріңіз.</p>
+  <div class="card pad">
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="62" fill="none" stroke="var(--line)" stroke-width="12"/>
+          <circle cx="75" cy="75" r="62" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--sky)"/><stop offset="100%" stop-color="var(--gold)"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="c-val"><div><div class="c-num">${L.lv}</div><div class="c-lbl">${L.title}</div></div></div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div class="grid g2">
+          <div class="stat"><div class="s-ico">📚</div><div><div class="s-num">${counts.words}</div><div class="s-lbl">Сөз</div></div></div>
+          <div class="stat gold"><div class="s-ico">🏆</div><div><div class="s-num">${counts.quiz}</div><div class="s-lbl">Тест (ең жақсы)</div></div></div>
+          <div class="stat green"><div class="s-ico">🧩</div><div><div class="s-num">${counts.gram}</div><div class="s-lbl">Сабақ</div></div></div>
+          <div class="stat"><div class="s-ico">🔥</div><div><div class="s-num">${S.streak}</div><div class="s-lbl">Күндік үздік</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><h2>Медальдар</h2></div>
+  <div class="grid g4">
+    ${BADGES.map(b=>{
+      const got=S.badges.includes(b.id);
+      return `<div class="badge ${got?'':'locked'}"><div class="b-ico">${b.ico}</div><div><div class="b-t">${b.t}</div><div class="b-d">${b.d}</div></div></div>`;
+    }).join("")}
+  </div>
+
+  <div class="sec-head"><h2>Менгеңген сөздер</h2></div>
+  ${wl?`<div class="pills" style="margin:0">${Object.keys(S.learned).map(w=>`<span class="pill active" style="cursor:default">${w}</span>`).join("")}</div>`:`<div class="card pad">Әлі сөз меңгермедің. <b style="color:var(--sky-d)"><a href="#" onclick="go('dict');return false">Сөздікке бар</a></b> және баста! 🚀</div>`}
+  <div class="note" style="margin-top:20px">ℹ️ Барлық прогрессіңіз осы құрылғыда (браузердің жергілікті сақтауында) сақталады. Жаңа құрылға көшкенде қайта бастайсыз — бұл жобаның келесі қадамы болып толық бұлттық профилді жүйе қосу болар еді.</div>`;
+}
+
+/* ---------- READING DICT POPUP ---------- */
+function bind(){
+  // reading word popup
+  document.querySelectorAll(".rword").forEach(el=>{
+    el.onmouseenter=(e)=>{
+      const r=READINGS[+curParam]||READINGS[0];
+      const key=el.dataset.w;
+      const m=r.dict[key]||"—";
+      const pop=document.getElementById("dictPop");
+      pop.innerHTML="<b>"+key+"</b><br>"+m;
+      pop.classList.add("show");
+      const rect=el.getBoundingClientRect();
+      let left=rect.left, top=rect.bottom+8;
+      if(left+270>window.innerWidth) left=window.innerWidth-280;
+      pop.style.left=left+"px"; pop.style.top=top+"px";
+    };
+    el.onmouseleave=()=>document.getElementById("dictPop").classList.remove("show");
+    el.onclick=(e)=>{ // mobile tap
+      e.stopPropagation();
+      const r=READINGS[+curParam]||READINGS[0];
+      const m=r.dict[el.dataset.w]||"—";
+      toast("«"+el.dataset.w+"» — "+m,3000);
+    };
+  });
+  // render reading quiz if reading detail
+  if(cur==="read"&&curParam!==null) renderReadQ();
+  // render flashcard if dict
+  if(cur==="dict") renderFlash();
+}
+
+/* ---------- MOBILE MENU ---------- */
+document.getElementById("hamb").onclick=()=>document.getElementById("sidebar").classList.toggle("open");
+
+/* ---------- INIT ---------- */
+bumpStreak();
+buildNav();
+go("home");
+</script>
+</body>
+</html>
