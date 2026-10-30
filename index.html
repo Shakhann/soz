@@ -901,7 +901,7 @@ function checkBadges(){
 
 /* ---------- АУДИО: дайын қазақша дауыс (MP3) + TTS резерв ---------- */
 // Мазмұн/аудио жаңарса бұл санды арттыр — браузер кэштен емес, жаңасын жүктейді.
-const BUILD="12";
+const BUILD="13";
 let AUDIO_MAP={};          // "Сөз" -> "0001.mp3"
 let audioEl=null;
 async function loadAudioMap(){
@@ -1096,13 +1096,6 @@ function vHome(){
     </div>
   </div>
   ${orn("orn")}
-  <div class="card pad" style="margin:18px 0; text-align:center">
-    <div class="eyebrow">Демо-видео</div>
-    <p style="color:var(--ink-2);font-size:14px;margin:8px 0 14px">Барлық 16 модульді 48 секундта көр</p>
-    <video controls width="100%" style="max-width:800px;border-radius:16px;box-shadow:var(--sh-lg)" poster="screenshots/desktop_home.png">
-      <source src="demo_video.mp4" type="video/mp4">
-    </video>
-  </div>
 
   <div class="grid g4 anim-fade-up delay-1">
     <div class="stat"><div class="s-ico">📚</div><div><div class="s-num">${wl}/${WORDS.length}</div><div class="s-lbl">Меңгерілген сөз</div></div></div>

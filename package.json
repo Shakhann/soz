@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "edge-tts": "^1.0.1",
     "puppeteer": "^25.16.0"
   },
   "allowScripts": {
