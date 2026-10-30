@@ -442,6 +442,29 @@ p.lead{color:var(--ink-2);font-size:16px;max-width:660px;margin-bottom:26px}
 .orn-box{background:linear-gradient(135deg,#FFF8E6,#FDEFC9);border:1.5px solid #F2D9A0;border-radius:16px;padding:10px;color:var(--ink);height:92px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh)}
 .orn-box svg{width:100%;max-width:240px;height:66px}
 
+
+/* ========== ANIMATIONS & MICRO-INTERACTIONS ========== */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.anim-fade-up{animation:fadeInUp .5s ease both}
+.anim-fade{animation:fadeIn .4s ease both}
+.delay-1{animation-delay:.08s}.delay-2{animation-delay:.16s}.delay-3{animation-delay:.24s}.delay-4{animation-delay:.32s}.delay-5{animation-delay:.40s}
+html{scroll-behavior:smooth}
+/* Desktop: tabbar always visible */
+@media(min-width:961px){
+  .tabbar{display:block}
+  main{padding:32px 40px calc(40px + var(--tabbar-h) + env(safe-area-inset-bottom))}
+}
+.hero{background-size:200% 200%!important;animation:shimmer 12s ease infinite}
+.btn{position:relative;overflow:hidden}
+.btn::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transition:left .5s}
+.btn:hover::after{left:100%}
+.stat{position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+.stat:hover::after{left:100%}
+.sheet-grp{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 4px;padding-left:4px}
+.sheet-grp:first-child{margin-top:0}
 </style>
 </head>
 <body>
@@ -459,7 +482,6 @@ p.lead{color:var(--ink-2);font-size:16px;max-width:660px;margin-bottom:26px}
     <div class="auth-area" id="authArea"></div>
   </div>
 </header>
-<nav class="topnav" id="topNav"></nav>
 <main id="view"></main>
 <nav class="tabbar"><div class="tabbar-inner" id="tabbarInner"></div></nav>
 <div class="sheet-bg" id="sheetBg"></div>
@@ -835,7 +857,7 @@ function checkBadges(){
 
 /* ---------- АУДИО: дайын қазақша дауыс (MP3) + TTS резерв ---------- */
 // Мазмұн/аудио жаңарса бұл санды арттыр — браузер кэштен емес, жаңасын жүктейді.
-const BUILD="8";
+const BUILD="9";
 let AUDIO_MAP={};          // "Сөз" -> "0001.mp3"
 let audioEl=null;
 async function loadAudioMap(){
@@ -926,19 +948,18 @@ const NAV=[
 let cur="home", curParam=null;
 const TAB_IDS=["home","dict","quiz","speak"];
 function buildNav(){
-  const tn=document.getElementById("topNav");
-  let lastGrp="__";
-  tn.innerHTML=NAV.map(x=>{
-    const lbl=(x.grp&&x.grp!==lastGrp)?`<span class="nav-grp">${x.grp}</span>`:"";
-    lastGrp=x.grp||lastGrp;
-    return lbl+`<button class="nav-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="ico">${x.ico}</span>${x.t}</button>`;
-  }).join("");
   const tb=document.getElementById("tabbarInner");
   const mainTabs=NAV.filter(x=>TAB_IDS.includes(x.id)).map(x=>`<button class="tab" data-v="${x.id}" onclick="go('${x.id}')"><span class="t-ico">${x.ico}</span>${x.t}</button>`).join("");
   const moreBtn=`<button class="tab" onclick="openSheet()"><span class="t-ico">▦</span>Барлығы</button>`;
   tb.innerHTML=mainTabs+moreBtn;
   const sg=document.getElementById("sheetGrid");
-  sg.innerHTML=NAV.map(x=>`<button class="sheet-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="s-ico">${x.ico}</span>${x.t}</button>`).join("");
+  let html="";
+  NAV.filter(x=>x.grp==="Тіл").forEach(x=>{ html+=`<button class="sheet-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="s-ico">${x.ico}</span>${x.t}</button>`; });
+  html+=`<div class="sheet-grp">Мәдениет</div>`;
+  NAV.filter(x=>x.grp==="Мәдениет").forEach(x=>{ html+=`<button class="sheet-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="s-ico">${x.ico}</span>${x.t}</button>`; });
+  html+=`<div class="sheet-grp">Жеке</div>`;
+  NAV.filter(x=>!x.grp||x.grp==="Жеке").forEach(x=>{ html+=`<button class="sheet-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="s-ico">${x.ico}</span>${x.t}</button>`; });
+  sg.innerHTML=html;
 }
 function go(view,param){
   cur=view; curParam=param||null;
@@ -1007,7 +1028,7 @@ function vHome(){
     {v:"quiz", ico:"🧠", bg:"var(--gold-l)", t:"Тест", d:`Ең жақсы: ${S.quizBest}%`},
   ];
   return `
-  <div class="hero">
+  <div class="hero anim-fade-up">
     <div class="hero-in">
       <div class="badge-pill">⚡ ${S.streak} күндік үздік · ${L.lv}-дәреже</div>
       <h1>Қазақ <em>тілін</em> және мәдениетін бір жерде үйрен</h1>
@@ -1020,14 +1041,14 @@ function vHome(){
   </div>
   ${orn("orn")}
 
-  <div class="grid g4">
+  <div class="grid g4 anim-fade-up delay-1">
     <div class="stat"><div class="s-ico">📚</div><div><div class="s-num">${wl}/${WORDS.length}</div><div class="s-lbl">Меңгерілген сөз</div></div></div>
     <div class="stat gold"><div class="s-ico">⚡</div><div><div class="s-num">${S.xp}</div><div class="s-lbl">Жиналған XP</div></div></div>
     <div class="stat green"><div class="s-ico">🔥</div><div><div class="s-num">${S.streak}</div><div class="s-lbl">Күндік үздік</div></div></div>
     <div class="stat"><div class="s-ico">🏆</div><div><div class="s-num">${S.badges.length}</div><div class="s-lbl">Медаль</div></div></div>
   </div>
 
-  <div class="card pad wotd" style="margin-top:18px">
+  <div class="card pad wotd anim-fade-up delay-2" style="margin-top:18px">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
       <div>
         <div class="eyebrow">Бүгінің сөзі</div>
@@ -1042,12 +1063,12 @@ function vHome(){
   </div>
 
   <div class="sec-head"><h2>Бөлімдер</h2></div>
-  <div class="grid g3">
-    ${tiles.map(t=>`<button class="tile" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}
+  <div class="grid g3 anim-fade-up delay-3">
+    ${tiles.map((t,i)=>`<button class="tile anim-fade-up delay-${(i%3)+1}" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}
   </div>
 
   <div class="sec-head"><h2>Мәдениет</h2></div>
-  <div class="grid g4">${[
+  <div class="grid g4 anim-fade-up delay-4">${[
     {v:"prov", ico:"🌾", bg:"var(--gold-l)", t:"Мақал-мәтел", d:MAQALS.length+" мақал · 6 бағыт"},
     {v:"jyr", ico:"🎼", bg:"var(--blue-l)", t:"Жыр-дастан", d:"Дастандар · жырлар · тыңдау"},
     {v:"tongue", ico:"🗣", bg:"var(--green-l)", t:"Жаңылтпаш", d:TONGUES.length+" жаңылтпаш · 3 деңгей"},
@@ -1056,7 +1077,7 @@ function vHome(){
     {v:"legend", ico:"🐴", bg:"var(--green-l)", t:"Аңыз", d:LEGENDS.length+" аңыз-әңгіме"},
     {v:"history", ico:"📜", bg:"var(--blue-l)", t:"Тарих", d:HISTORY.length+" сабақ · тест"},
     {v:"orn", ico:"🎨", bg:"var(--gold-l)", t:"Ою-өрнек", d:ORNAMENTS.length+" ұлттық ою"},
-  ].map(t=>`<button class="tile" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}</div>
+  ].map((t,i)=>`<button class="tile anim-fade-up delay-${(i%4)+1}" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}</div>
 
   <div class="sec-head"><h2>Мақал-мәтелдер</h2><button class="link-more" onclick="go('prov')">Барлығы →</button></div>
   <div class="grid g3">${MAQALS.slice(0,3).map(p=>`
