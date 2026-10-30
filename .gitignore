@@ -1,0 +1,7 @@
+node_modules/
+screenshots/
+package.json
+package-lock.json
+shoot.js
+make_video.sh
+*.mp4
