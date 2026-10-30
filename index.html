@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>СӨЗ — Қазақ тілін үйренетін цифрлық платформа</title>
-<meta name="description" content="СӨЗ — қазақ тілін заманауи тәсілмен үйрететін интерактивті цифрлық платформа: сөздік, грамматика, оқу, тыңдау, сөйлеу, тест, мақал-мәтел және прогресс." />
+<title>ДАСТАН — Қазақ тілі мен мәдениетінің цифрлық платформасы</title>
+<meta name="description" content="ДАСТАН — қазақ тілі мен мәдениетін заманауи тәсілмен үйрететін интерактивті платформа: сөздік, грамматика, жыр-дастан, мақал-мәтел, жаңылтпаш, тағамдар, киімдер, аңыздар, тарих, ою-өрнек." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2300AFCA'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23fff' font-family='Arial'%3E%D0%A1%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="emblem.svg" />
 <style>
 :root{
   --navy:#26221A; --navy-2:#332E23; --navy-3:#4A4436;
@@ -49,9 +49,7 @@ input,select{font-family:inherit}
 }
 .brand{display:flex;align-items:center;gap:13px;min-width:0}
 .brand-logo{
-  width:44px;height:44px;border-radius:13px;flex:0 0 auto;
-  background:radial-gradient(circle at 30% 25%,#FFE58A,var(--gold));
-  display:grid;place-items:center;font-family:'Nunito';font-weight:900;font-size:23px;color:var(--navy);
+  width:44px;height:44px;border-radius:13px;flex:0 0 auto;display:block;
   box-shadow:0 5px 14px rgba(245,179,1,.35);
 }
 .brand-name{font-family:'Nunito';font-weight:900;font-size:21px;letter-spacing:.5px;line-height:1;color:var(--ink)}
@@ -425,15 +423,30 @@ p.lead{color:var(--ink-2);font-size:15px;max-width:640px;margin-bottom:22px}
   .user-chip{padding:4px 8px 4px 5px}
 }
 
+
+/* ---------- ДАСТАН: мәдениет модульдері ---------- */
+.nav-grp{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);opacity:.6;margin:0 4px 0 16px;white-space:nowrap;align-self:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 22px}
+.chip{padding:9px 16px;border-radius:30px;border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:13.5px;cursor:pointer;transition:.15s;color:var(--ink-2);font-family:inherit}
+.chip:hover{border-color:var(--blue);color:var(--blue-d)}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.jyr-text{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 22px}
+.jyr-line{font-size:16.5px;font-weight:700;line-height:2;position:relative;padding-left:24px}
+.jyr-line::before{content:"";position:absolute;left:0;top:.66em;width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
+.item-text{font-size:15.5px;line-height:1.9;color:var(--ink-2)}
+.era-badge{display:inline-block;background:var(--blue-l);color:var(--blue-d);font-weight:800;font-size:12.5px;padding:5px 13px;border-radius:20px}
+.orn-box{background:linear-gradient(135deg,#FFF8E6,#FDEFC9);border:1px solid #EBDDB4;border-radius:14px;padding:8px;color:var(--ink);height:88px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.orn-box svg{width:100%;max-width:230px;height:64px}
+
 </style>
 </head>
 <body>
 <header class="appbar">
   <div class="brand">
-    <div class="brand-logo">С</div>
+    <img class="brand-logo" src="emblem.svg" alt="ДАСТАН"/>
     <div>
-      <div class="brand-name">СӨЗ</div>
-      <div class="brand-sub">Қазақ тілі цифрлық мектебі</div>
+      <div class="brand-name">ДАСТАН</div>
+      <div class="brand-sub">Қазақ тілі мен мәдениеті платформасы</div>
     </div>
   </div>
   <div class="appbar-right">
@@ -498,10 +511,13 @@ window.FBCFG = {
 })();
 </script>
 
+<script src="content-a.js?v=7"></script>
+<script src="content-b.js?v=7"></script>
+<script src="content-c.js?v=7"></script>
 <script>
 "use strict";
 /* ============================================================
-   СӨЗ — Қазақ тілін үйренетін цифрлық платформа
+   ДАСТАН — Қазақ тілі мен мәдениетінің цифрлық платформасы
    Vanilla JS · Web Speech API · localStorage
    ============================================================ */
 
@@ -747,15 +763,24 @@ const BADGES = [
   {id:"read", ico:"📖", t:"Оқушы", d:"Оқу тапсырмасын аяқта"},
   {id:"speak", ico:"🎤", t:"Еркін сөйлеуші", d:"Сөйлеу жаттығуын орында"},
   {id:"xp500", ico:"⚡", t:"500 XP", d:"500 ұпай жина"},
+  {id:"maqal", ico:"🌾", t:"Дана сөз", d:"15 мақал-мәтел аш"},
+  {id:"jyr", ico:"🎼", t:"Жыршы", d:"Бір жыр-дастан толық оқы"},
+  {id:"tongue", ico:"🗣", t:"Жаңылтпашшы", d:"5 жаңылтпаш тыңда"},
+  {id:"history", ico:"📜", t:"Тарихшы", d:"3 тарих сұрағын дұрыс жауапта"},
+  {id:"orn", ico:"🎨", t:"Оюгер", d:"Барлық ою-өрнекті көр"},
 ];
 
 /* ---------- STATE ---------- */
 const SKEY="sóz_state_v1";
 let S = load();
 function load(){
-  try{const d=JSON.parse(localStorage.getItem(SKEY));if(d&&typeof d.xp==="number")return d;}catch(e){}
+  try{const d=JSON.parse(localStorage.getItem(SKEY));if(d&&typeof d.xp==="number"){
+    d.provSeen=d.provSeen||[]; d.jyrRead=d.jyrRead||[]; d.tongueHeard=d.tongueHeard||[];
+    d.legendRead=d.legendRead||[]; d.histRead=d.histRead||[]; d.ornSeen=d.ornSeen||[]; d.itemQ=d.itemQ||{};
+    return d;}}catch(e){}
   return {xp:0, streak:0, lastDay:null, learned:{}, quizBest:0, quizDone:0,
-         grammarRead:[], readDone:[], speakDone:0, badges:[], today:""};
+         grammarRead:[], readDone:[], speakDone:0, badges:[], today:"",
+         provSeen:[], jyrRead:[], tongueHeard:[], legendRead:[], histRead:[], ornSeen:[], itemQ:{}};
 }
 function save(){localStorage.setItem(SKEY,JSON.stringify(S));queuePush();}
 function dayStr(){return new Date().toDateString();}
@@ -792,6 +817,11 @@ function checkBadges(){
     quiz: S.quizDone>=1, gram: g>=GRAMMAR.length,
     read: S.readDone.length>=1, speak: S.speakDone>=1,
     xp500: S.xp>=500,
+    maqal: (S.provSeen||[]).length>=15,
+    jyr: (S.jyrRead||[]).length>=1,
+    tongue: (S.tongueHeard||[]).length>=5,
+    history: Object.keys(S.itemQ||{}).filter(k=>k.indexOf("history:")===0).reduce((n,k)=>n+((S.itemQ[k]||[]).length),0)>=3,
+    orn: (S.ornSeen||[]).length>=((window.CONTENT_B&&window.CONTENT_B.ORNAMENTS)||[]).length,
   };
   let got=false;
   BADGES.forEach(b=>{ if(map[b.id]&&!S.badges.includes(b.id)){S.badges.push(b.id);got=true;
@@ -801,7 +831,7 @@ function checkBadges(){
 
 /* ---------- АУДИО: дайын қазақша дауыс (MP3) + TTS резерв ---------- */
 // Мазмұн/аудио жаңарса бұл санды арттыр — браузер кэштен емес, жаңасын жүктейді.
-const BUILD="6";
+const BUILD="7";
 let AUDIO_MAP={};          // "Сөз" -> "0001.mp3"
 let audioEl=null;
 async function loadAudioMap(){
@@ -872,21 +902,33 @@ function initRecog(){
 
 /* ---------- NAV ---------- */
 const NAV=[
-  {id:"home", ico:"🏠", t:"Басты бет"},
-  {id:"dict", ico:"📚", t:"Сөздік"},
-  {id:"gram", ico:"🧩", t:"Грамматика"},
-  {id:"read", ico:"📖", t:"Оқу"},
-  {id:"listen", ico:"🎧", t:"Тыңдау"},
-  {id:"speak", ico:"🎤", t:"Сөйлеу"},
-  {id:"quiz", ico:"🧠", t:"Тест"},
-  {id:"prov", ico:"🌾", t:"Мақал-мәтел"},
-  {id:"prog", ico:"📈", t:"Прогресс"},
+  {id:"home", ico:"🏠", t:"Басты бет", grp:""},
+  {id:"dict", ico:"📚", t:"Сөздік", grp:"Тіл"},
+  {id:"gram", ico:"🧩", t:"Грамматика", grp:"Тіл"},
+  {id:"read", ico:"📖", t:"Оқу", grp:"Тіл"},
+  {id:"listen", ico:"🎧", t:"Тыңдау", grp:"Тіл"},
+  {id:"speak", ico:"🎤", t:"Сөйлеу", grp:"Тіл"},
+  {id:"quiz", ico:"🧠", t:"Тест", grp:"Тіл"},
+  {id:"prov", ico:"🌾", t:"Мақал-мәтел", grp:"Мәдениет"},
+  {id:"jyr", ico:"🎼", t:"Жыр-дастан", grp:"Мәдениет"},
+  {id:"tongue", ico:"🗣", t:"Жаңылтпаш", grp:"Мәдениет"},
+  {id:"food", ico:"🍖", t:"Тағам", grp:"Мәдениет"},
+  {id:"cloth", ico:"👘", t:"Киім", grp:"Мәдениет"},
+  {id:"legend", ico:"🐴", t:"Аңыз", grp:"Мәдениет"},
+  {id:"history", ico:"📜", t:"Тарих", grp:"Мәдениет"},
+  {id:"orn", ico:"🎨", t:"Ою-өрнек", grp:"Мәдениет"},
+  {id:"prog", ico:"📈", t:"Прогресс", grp:""},
 ];
 let cur="home", curParam=null;
 const TAB_IDS=["home","dict","quiz","speak"];
 function buildNav(){
   const tn=document.getElementById("topNav");
-  tn.innerHTML=NAV.map(x=>`<button class="nav-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="ico">${x.ico}</span>${x.t}</button>`).join("");
+  let lastGrp="__";
+  tn.innerHTML=NAV.map(x=>{
+    const lbl=(x.grp&&x.grp!==lastGrp)?`<span class="nav-grp">${x.grp}</span>`:"";
+    lastGrp=x.grp||lastGrp;
+    return lbl+`<button class="nav-item" data-v="${x.id}" onclick="go('${x.id}')"><span class="ico">${x.ico}</span>${x.t}</button>`;
+  }).join("");
   const tb=document.getElementById("tabbarInner");
   const mainTabs=NAV.filter(x=>TAB_IDS.includes(x.id)).map(x=>`<button class="tab" data-v="${x.id}" onclick="go('${x.id}')"><span class="t-ico">${x.ico}</span>${x.t}</button>`).join("");
   const moreBtn=`<button class="tab" onclick="openSheet()"><span class="t-ico">▦</span>Барлығы</button>`;
@@ -926,7 +968,7 @@ function orn(cls){
 }
 function render(){
   const v=document.getElementById("view");
-  const map={home:vHome,dict:vDict,gram:vGram,read:vRead,listen:vListen,speak:vSpeak,quiz:vQuiz,prov:vProv,prog:vProg,login:vLogin,register:vRegister};
+  const map={home:vHome,dict:vDict,gram:vGram,read:vRead,listen:vListen,speak:vSpeak,quiz:vQuiz,prov:vProv,jyr:vJyr,jyrItem:vJyrItem,tongue:vTongue,food:vFood,cloth:vCloth,legend:vLegend,legendItem:vLegendItem,history:vHistory,historyItem:vHistoryItem,orn:vOrn,prog:vProg,login:vLogin,register:vRegister};
   v.innerHTML="<div class='view'>"+(map[cur]||vHome)()+"</div>";
   bind();
   updateLevelUI();
@@ -964,8 +1006,8 @@ function vHome(){
   <div class="hero">
     <div class="hero-in">
       <div class="badge-pill">⚡ ${S.streak} күндік үздік · ${L.lv}-дәреже</div>
-      <h1>Қазақ тілін <em>заманауи</em> жолмен үйрен</h1>
-      <p>Сөздік, грамматика, оқу, тыңдау, сөйлеу және тест — барлығы бір платформада. Табиғи қазақша дауыс пен интерактивті жаттығулар.</p>
+      <h1>Қазақ <em>тілін</em> және мәдениетін бір жерде үйрен</h1>
+      <p>Сөздік, грамматика, жыр-дастан, мақал-мәтел, жаңылтпаш, тарих, ою-өрнек — қазақ тілі мен мәдениетінің барлығы бір платформада. Табиғи қазақша дауыс пен интерактивті жаттығулар.</p>
       <div class="hero-actions">
         <button class="btn btn-primary" onclick="go('dict')">🚀 Жаттығуды баста</button>
         <button class="btn btn-ghost" onclick="go('quiz')">🧠 Тест тап</button>
@@ -1000,8 +1042,26 @@ function vHome(){
     ${tiles.map(t=>`<button class="tile" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}
   </div>
 
+  <div class="sec-head"><h2>Мәдениет</h2></div>
+  <div class="grid g4">${[
+    {v:"prov", ico:"🌾", bg:"var(--gold-l)", t:"Мақал-мәтел", d:MAQALS.length+" мақал · 6 бағыт"},
+    {v:"jyr", ico:"🎼", bg:"var(--blue-l)", t:"Жыр-дастан", d:"Дастандар · жырлар · тыңдау"},
+    {v:"tongue", ico:"🗣", bg:"var(--green-l)", t:"Жаңылтпаш", d:TONGUES.length+" жаңылтпаш · 3 деңгей"},
+    {v:"food", ico:"🍖", bg:"var(--gold-l)", t:"Тағам", d:FOODS.length+" дәстүрлі тағам"},
+    {v:"cloth", ico:"👘", bg:"var(--blue-l)", t:"Киім", d:CLOTHES.length+" дәстүрлі киім"},
+    {v:"legend", ico:"🐴", bg:"var(--green-l)", t:"Аңыз", d:LEGENDS.length+" аңыз-әңгіме"},
+    {v:"history", ico:"📜", bg:"var(--blue-l)", t:"Тарих", d:HISTORY.length+" сабақ · тест"},
+    {v:"orn", ico:"🎨", bg:"var(--gold-l)", t:"Ою-өрнек", d:ORNAMENTS.length+" ұлттық ою"},
+  ].map(t=>`<button class="tile" onclick="go('${t.v}')"><div class="t-ico" style="background:${t.bg}">${t.ico}</div><h3>${t.t}</h3><p>${t.d}</p><span class="go">Ашу →</span></button>`).join("")}</div>
+
   <div class="sec-head"><h2>Мақал-мәтелдер</h2><button class="link-more" onclick="go('prov')">Барлығы →</button></div>
-  <div class="grid g3">${PROVERBS.slice(0,3).map((p,i)=>provCard(p,i)).join("")}</div>`;
+  <div class="grid g3">${MAQALS.slice(0,3).map(p=>`
+    <div class="prov-card" onclick="this.classList.toggle('flip')">
+      <div class="prov-inner">
+        <div class="prov-face prov-front"><div class="q">«${p.t}»</div><div class="tap">мағынасы ↓</div></div>
+        <div class="prov-face prov-back"><div class="m">${p.m}</div></div>
+      </div>
+    </div>`).join("")}</div>`;
 }
 
 /* ---------- DICT ---------- */
@@ -1335,23 +1395,260 @@ function quizResult(){
 function quizReset(){ quizStarted=false; go('quiz'); }
 
 /* ---------- PROVERBS ---------- */
-function provCard(p,i){
-  return `<div class="prov-card" onclick="this.classList.toggle('flip')">
-    <div class="prov-inner">
-      <div class="prov-face prov-front"><div class="q">«${p.t}»</div><div class="tap">бас →</div></div>
-      <div class="prov-face prov-back"><div class="m">${p.m}</div>
-        <button class="speak-btn" style="position:absolute;bottom:10px;right:12px;background:#fff" title="Дауысымен тыңдау" onclick="event.stopPropagation();speak('${p.t.replace(/'/g,"\\'")}')">🔊</button>
-      </div>
-    </div>
-  </div>`;
+
+/* ============================================================
+   МӘДЕНИЕТ МОДУЛЬДЕРІ — Жыр-дастан, Жаңылтпаш, Тағам, Киім,
+   Аңыз, Тарих, Ою-өрнек, Мақал-мәтел (кеңейтілген)
+   ============================================================ */
+const MAQALS = (window.CONTENT_A&&window.CONTENT_A.PROVERBS)||[];
+const MAQAL_CATS = (window.CONTENT_A&&window.CONTENT_A.PROVERB_CATS)||[];
+const TONGUES = (window.CONTENT_A&&window.CONTENT_A.TONGUES)||[];
+const FOODS = (window.CONTENT_B&&window.CONTENT_B.FOODS)||[];
+const CLOTHES = (window.CONTENT_B&&window.CONTENT_B.CLOTHES)||[];
+const LEGENDS = (window.CONTENT_B&&window.CONTENT_B.LEGENDS)||[];
+const ORNAMENTS = (window.CONTENT_B&&window.CONTENT_B.ORNAMENTS)||[];
+const HISTORY = (window.CONTENT_C&&window.CONTENT_C.HISTORY)||[];
+const JYRS = (window.CONTENT_C&&window.CONTENT_C.JYRS)||[];
+
+let provCat="all";
+function setProvCat(c){ provCat=c; render(); }
+
+/* --- shared: first-view XP --- */
+function firstSee(listName, idx){
+  const L=S[listName]||(S[listName]=[]);
+  if(!L.includes(idx)){ L.push(idx); addXP(5); save(); return true; }
+  return false;
 }
+/* --- shared: item quiz (3 сұрақ) --- */
+function itemQuizHTML(key,qs){
+  const done=(S.itemQ&&S.itemQ[key])||[];
+  return `<div class="card pad" style="margin-top:16px">
+    <div class="eyebrow">🧠 Түсіну сұрақтары</div>
+    <div style="margin-top:10px">${qs.map((q,qi)=>`
+      <div style="margin-bottom:16px">
+        <div style="font-weight:800;font-size:15px;margin-bottom:9px">${qi+1}. ${esc(q.q)}</div>
+        ${q.o.map((o,oi)=>{
+          const wasRight=done.includes(qi);
+          let cls="opt";
+          if(wasRight){ cls+= oi===q.a?" correct":""; }
+          return `<button class="${cls}" ${wasRight?"disabled":""} onclick="ansItem('${key}',${qi},${oi})">${esc(o)}</button>`;
+        }).join("")}
+      </div>`).join("")}
+    </div></div>`;
+}
+function ansItem(key,qi,oi){
+  if(!S.itemQ) S.itemQ={};
+  if(!S.itemQ[key]) S.itemQ[key]=[];
+  if(S.itemQ[key].includes(qi)) return;
+  const it = key.startsWith("jyr:")?JYRS[+key.slice(4)]:key.startsWith("legend:")?LEGENDS[+key.slice(7)]:HISTORY[+key.slice(8)];
+  const q=(it.quiz||it.q)[qi]; const ok=oi===q.a;
+  S.itemQ[key].push(qi); save();
+  if(ok){ addXP(5,"Дұрыс жауап!"); } else { toast("Қайта көріп, тағы көр 😊"); }
+  render();
+}
+
+/* ---------- МАҚАЛ-МӘТЕЛ (кеңейтілген) ---------- */
 function vProv(){
+  const list = provCat==="all"? MAQALS : MAQALS.filter(p=>p.cat===provCat);
+  const chips=`<div class="chips">
+    <button class="chip ${provCat==="all"?"active":""}" onclick="setProvCat('all')">Барлығы · ${MAQALS.length}</button>
+    ${MAQAL_CATS.map(c=>`<button class="chip ${provCat===c.id?"active":""}" onclick="setProvCat('${c.id}')">${c.icon} ${c.name}</button>`).join("")}
+  </div>`;
   return `
   <div class="back" onclick="go('home')">← Басты бетке</div>
   <h1 class="page">🌾 Мақал-мәтелдер</h1>
-  <p class="lead">Қазақ халқының даналығы — мақал-мәтелдер. Карточкаға бассаңыз, мағынасы көрсетіледі.</p>
-  <div class="grid g3">${PROVERBS.map((p,i)=>provCard(p,i)).join("")}</div>`;
+  <p class="lead">Қазақ халқының даналығы — ${MAQALS.length} мақал-мәтел, ${MAQAL_CATS.length} бағытта. Мағынасын көру үшін карточкаға басың.</p>
+  ${chips}
+  <div class="grid g3">${list.map(p=>{
+    const gi=MAQALS.indexOf(p);
+    return `<div class="prov-card" onclick="this.classList.toggle('flip');firstSee('provSeen',${gi})">
+      <div class="prov-inner">
+        <div class="prov-face prov-front"><div class="q">«${esc(p.t)}»</div><div class="tap">мағынасы ↓</div></div>
+        <div class="prov-face prov-back"><div class="m">${esc(p.m)}</div>
+          <button class="speak-btn" style="position:absolute;bottom:10px;right:12px;background:#fff" title="Дауысымен тыңдау" onclick="event.stopPropagation();speak('prov2:${esc(p.t)}')">🔊</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
 }
+
+/* ---------- ЖЫР-ДАСТАН ---------- */
+function vJyr(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🎼 Жыр-дастан</h1>
+  <p class="lead">Қазақтың дастандары мен ақын жырлары. Шығарманы ашып, мәтінін оқып, дауысымен тыңдап, сұрақтарға жауап бер.</p>
+  <div class="grid g2">${JYRS.map((j,i)=>`
+    <button class="tile" onclick="go('jyrItem',${i})">
+      <div class="t-ico" style="background:${j.kind==="дастан"?"var(--gold-l)":"var(--blue-l)"}">${j.kind==="дастан"?"📜":"🎶"}</div>
+      <h3>${esc(j.t)}</h3>
+      <p>${esc(j.author)} · ${j.kind}</p>
+      <span class="go">${S.jyrRead&&S.jyrRead.includes(i)?"✓ Оқылды · тағы көр":"Оқу · тыңдау →"}</span>
+    </button>`).join("")}</div>`;
+}
+function vJyrItem(){
+  const i=+curParam;
+  firstSee("jyrRead",i);
+  const j=JYRS[i];
+  return `
+  <div class="back" onclick="go('jyr')">← Жыр-дастанға</div>
+  <h1 class="page">${j.kind==="дастан"?"📜":"🎶"} ${esc(j.t)}</h1>
+  <p class="lead">${esc(j.author)} · ${j.kind}</p>
+  <div class="card pad">
+    <div class="eyebrow">Не туралы</div>
+    <p style="margin-top:8px;font-size:15px;line-height:1.7">${esc(j.d)}</p>
+    <div style="margin-top:12px">
+      <button class="btn btn-soft" onclick="speak('jyr:${i}')">🔊 Дауысымен тыңдау</button>
+    </div>
+  </div>
+  <div class="card pad" style="margin-top:16px">
+    <div class="eyebrow">Мәтін</div>
+    <div class="jyr-text" style="margin-top:10px">${j.text.split("\n").map(l=>`<div class="jyr-line">${esc(l)}</div>`).join("")}</div>
+  </div>
+  ${itemQuizHTML("jyr:"+i,j.quiz||j.q||[])}
+  <div style="height:30px"></div>`;
+}
+
+/* ---------- ЖАҢЫЛТПАШ ---------- */
+function vTongue(){
+  const lvName={1:"Жеңіл",2:"Орташа",3:"Қиын"};
+  let html=`
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🗣 Жаңылтпаштар</h1>
+  <p class="lead">Тілінді қимылдатып, жаңылтпашты таза айт! Алдымен тыңда, содан кейін дәл сол тәртіппен айт.${TONGUES.length} жаңылтпаш, 3 деңгей.</p>`;
+  for(const lv of [1,2,3]){
+    const items=TONGUES.map((t,gi)=>({...t,gi})).filter(x=>x.lvl===lv);
+    html+=`<div class="sec-head" style="margin-top:22px"><h2>${lv===1?"🌱":lv===2?"🌿":"🔥"} ${lvName[lv]} деңгей</h2></div>
+    <div class="grid g2">${items.map(x=>`
+      <div class="card pad" style="display:flex;justify-content:space-between;align-items:center;gap:14px">
+        <div style="font-weight:800;font-size:16px">«${esc(x.t)}»</div>
+        <button class="speak-btn" onclick="speak('tongue:${x.gi}');firstSee('tongueHeard',${x.gi})" title="Тыңдау">🔊</button>
+      </div>`).join("")}</div>`;
+  }
+  html+=`<div style="height:30px"></div>`;
+  return html;
+}
+
+/* ---------- ТАҒАМ ---------- */
+const FOOD_ICO={"Бешбармақ":"🍖","Қазы":"🌭","Қымыз":"🥛","Құрт":"🧀","Бауырсақ":"🍩","Шорпа":"🍲","Манты":"🥟","Көже":"🥣","Сүтқаймақ":"🍚","Айран":"🥛","Тоқаш":"🍚","Қартау":"🌭"};
+function vFood(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🍖 Дәстүрлі тағамдар</h1>
+  <p class="lead">Қазақ халқының дәстүрлі тағамдары: не екені, қалай жасалады, қашан беріледі. ${FOODS.length} тағам.</p>
+  <div class="grid g2">${FOODS.map((f,i)=>`
+    <div class="card pad">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div style="font-size:34px;line-height:1">${FOOD_ICO[f.t]||"🍽"}</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h3 style="font-size:17px">${esc(f.t)}</h3>
+            <button class="speak-btn" onclick="speak('food:${i}')" title="Атауымен тыңдау">🔊</button>
+          </div>
+          <p style="font-size:14px;line-height:1.65;margin-top:6px">${esc(f.d)}</p>
+        </div>
+      </div>
+    </div>`).join("")}</div>
+  <div style="height:30px"></div>`;
+}
+
+/* ---------- КИІМ ---------- */
+const CLOTH_ICO={"Шапан":"🧥","Желің":"🥾","Көйлек":"👗","Шалпар":"👖","Күміс белбеу":"⚔️","Қалпақ":"🎩","Өрмек":"🧣","Жура":"👕","Түмен":"👑","Әбже":"🧵"};
+function vCloth(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">👘 Дәстүрлі киім-кешек</h1>
+  <p class="lead">Қазақтың дәстүрлі киім-кешектері: не екені, кім киеді, ерекшелігі. ${CLOTHES.length} бұйым.</p>
+  <div class="grid g2">${CLOTHES.map((c,i)=>`
+    <div class="card pad">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div style="font-size:34px;line-height:1">${CLOTH_ICO[c.t]||"👘"}</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h3 style="font-size:17px">${esc(c.t)}</h3>
+            <button class="speak-btn" onclick="speak('cloth:${i}')" title="Атауымен тыңдау">🔊</button>
+          </div>
+          <p style="font-size:14px;line-height:1.65;margin-top:6px">${esc(c.d)}</p>
+        </div>
+      </div>
+    </div>`).join("")}</div>
+  <div style="height:30px"></div>`;
+}
+
+/* ---------- АҢЫЗ ---------- */
+function vLegend(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🐴 Аңыз-әңгімелер</h1>
+  <p class="lead">Қазақ халқының аңыздары: домбыра, тұлпар, қымыз, шанырак… Әр аңызды оқып, сұрақтарға жауап бер. ${LEGENDS.length} аңыз.</p>
+  <div class="grid g2">${LEGENDS.map((l,i)=>`
+    <button class="tile" onclick="go('legendItem',${i})">
+      <div class="t-ico" style="background:var(--gold-l)">🐴</div>
+      <h3>${esc(l.t)}</h3>
+      <p>${esc(l.text.slice(0,80))}…</p>
+      <span class="go">${S.legendRead&&S.legendRead.includes(i)?"✓ Оқылды":"Оқу →"}</span>
+    </button>`).join("")}</div>`;
+}
+function vLegendItem(){
+  const i=+curParam;
+  firstSee("legendRead",i);
+  const l=LEGENDS[i];
+  return `
+  <div class="back" onclick="go('legend')">← Аңыздарға</div>
+  <h1 class="page">🐴 ${esc(l.t)}</h1>
+  <p class="lead">Аңызды оқып, дауысымен тыңдап, сұрақтарға жауап бер.</p>
+  <div class="card pad">
+    <button class="btn btn-soft" onclick="speak('legend:${i}');firstSee('legendRead',${i})">🔊 Тыңдау</button>
+    <div class="item-text" style="margin-top:12px">${esc(l.text)}</div>
+  </div>
+  ${itemQuizHTML("legend:"+i,l.q||[])}
+  <div style="height:30px"></div>`;
+}
+
+/* ---------- ТАРИХ ---------- */
+function vHistory(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">📜 Қазақ тарихы</h1>
+  <p class="lead">Қазақ тарихының негізгі кезеңдері — ${HISTORY.length} сабақ. Әр сабақты оқып, тест тап.</p>
+  <div class="grid g2">${HISTORY.map((h,i)=>`
+    <button class="tile" onclick="go('historyItem',${i})">
+      <div class="t-ico" style="background:var(--blue-l)">📜</div>
+      <h3>${esc(h.t)}</h3>
+      <p><span class="era-badge">${esc(h.era)}</span></p>
+      <span class="go">${S.histRead&&S.histRead.includes(i)?"✓ Оқылды":"Оқу →"}</span>
+    </button>`).join("")}</div>`;
+}
+function vHistoryItem(){
+  const i=+curParam;
+  firstSee("histRead",i);
+  const h=HISTORY[i];
+  return `
+  <div class="back" onclick="go('history')">← Тарихқа</div>
+  <h1 class="page">📜 ${esc(h.t)}</h1>
+  <p class="lead"><span class="era-badge">${esc(h.era)}</span></p>
+  <div class="card pad">
+    <div class="item-text">${esc(h.text)}</div>
+  </div>
+  ${itemQuizHTML("history:"+i,h.q||[])}
+  <div style="height:30px"></div>`;
+}
+
+/* ---------- ОЮ-ӨРНЕК ---------- */
+function vOrn(){
+  return `
+  <div class="back" onclick="go('home')">← Басты бетке</div>
+  <h1 class="page">🎨 Ою-өрнек</h1>
+  <p class="lead">Қазақтың ұлттық ою-өрнектері: несімен ерекше, қандай мағына білдіреді. ${ORNAMENTS.length} ою.</p>
+  <div class="grid g2">${ORNAMENTS.map((o,i)=>`
+    <div class="card pad">
+      <div class="orn-box" onclick="firstSee('ornSeen',${i})">${o.svg}</div>
+      <h3 style="font-size:17px;margin-top:12px">${esc(o.t)}</h3>
+      <p style="font-size:14px;line-height:1.65;margin-top:6px">${esc(o.d)}</p>
+    </div>`).join("")}</div>
+  <div style="height:30px"></div>`;
+}
+
 
 /* ---------- PROGRESS ---------- */
 function vProg(){
@@ -1365,6 +1662,9 @@ function vProg(){
     quiz:S.quizBest+"%",
     gram:S.grammarRead.length+"/"+GRAMMAR.length,
     read:S.readDone.length+"/"+READINGS.length,
+    maqal:(S.provSeen||[]).length+"/"+MAQALS.length,
+    jyr:(S.jyrRead||[]).length+"/"+JYRS.length,
+    hist:(S.histRead||[]).length+"/"+HISTORY.length,
   };
   return `
   <div class="back" onclick="go('home')">← Басты бетке</div>
@@ -1384,11 +1684,15 @@ function vProg(){
         <div class="c-val"><div><div class="c-num">${L.lv}</div><div class="c-lbl">${L.title}</div></div></div>
       </div>
       <div style="flex:1;min-width:220px">
-        <div class="grid g2">
+        <div class="grid g4">
           <div class="stat"><div class="s-ico">📚</div><div><div class="s-num">${counts.words}</div><div class="s-lbl">Сөз</div></div></div>
           <div class="stat gold"><div class="s-ico">🏆</div><div><div class="s-num">${counts.quiz}</div><div class="s-lbl">Тест (ең жақсы)</div></div></div>
           <div class="stat green"><div class="s-ico">🧩</div><div><div class="s-num">${counts.gram}</div><div class="s-lbl">Сабақ</div></div></div>
           <div class="stat"><div class="s-ico">🔥</div><div><div class="s-num">${S.streak}</div><div class="s-lbl">Күндік үздік</div></div></div>
+          <div class="stat"><div class="s-ico">📖</div><div><div class="s-num">${counts.read}</div><div class="s-lbl">Оқу</div></div></div>
+          <div class="stat gold"><div class="s-ico">🌾</div><div><div class="s-num">${counts.maqal}</div><div class="s-lbl">Мақал ашылды</div></div></div>
+          <div class="stat green"><div class="s-ico">🎼</div><div><div class="s-num">${counts.jyr}</div><div class="s-lbl">Жыр оқылды</div></div></div>
+          <div class="stat"><div class="s-ico">📜</div><div><div class="s-num">${counts.hist}</div><div class="s-lbl">Тарих сабағы</div></div></div>
         </div>
       </div>
     </div>
